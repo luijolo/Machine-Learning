@@ -32,7 +32,7 @@ Ayudantes:
 - Nombre y apellido:
   - Xiomara Kuwae
   - Luis José López 28.230.426-0
-- Usuario de GitHub (opcional):  https://github.com/luijolo ->
+- Usuario de GitHub (opcional):  https://github.com/luijolo -> https://github.com/luijolo/Machine-Learning/tree/main/Tarea%201
 
 ## Instrucciones
 
