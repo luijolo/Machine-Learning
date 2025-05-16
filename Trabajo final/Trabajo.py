@@ -12,22 +12,7 @@ import pandas as pd
 os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
 print(os.getcwd())
 
-""" 
-Unir bases
-df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020.csv')
-df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021.csv')
-df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022.csv')
-df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2023.csv') 
-df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024.csv')
-
-df = pd.concat([df1, df2, df3, df4, df5], ignore_index=True) 
-"""
-
-# df.to_csv('datafinal.csv', index=False)
-
 """ Inicio """
-# df = pd.read_csv('datafinal.csv')
-
 
 """ Análisis exploratorio de datos """
 
