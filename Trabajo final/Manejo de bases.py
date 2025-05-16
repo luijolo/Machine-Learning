@@ -75,3 +75,17 @@ df = df[df['COD_GRADO'].isin([3, 4])]
 df['COD_GRADO'].value_counts()
 
 df.to_csv('2020.csv', index=False)
+
+
+""" ######################### Unir bases ########################## """
+df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020.csv')
+df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021.csv')
+df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022.csv')
+df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2023.csv') 
+df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024.csv')
+
+df = pd.concat([df1, df2, df3, df4, df5], ignore_index=True) 
+
+df.to_csv('datafinal.csv', index=False)
+
+df = pd.read_csv('datafinal.csv')
