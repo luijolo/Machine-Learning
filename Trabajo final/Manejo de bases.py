@@ -24,6 +24,8 @@ df['COD_GRADO'].value_counts()
 
 df.to_csv('2024.csv', index=False)
 
+#merge con preferentes y docentes
+
 """ ############################# 2023 ############################# """
 df = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2023.csv" , sep=';')
 
@@ -36,6 +38,8 @@ df = df[df['COD_GRADO'].isin([3, 4])]
 df['COD_GRADO'].value_counts()
 
 df.to_csv('2023.csv', index=False)
+
+#merge con preferentes y docentes
 
 """ ############################# 2022 ############################# """
 df = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2022.csv" , sep=';')
@@ -50,6 +54,8 @@ df['COD_GRADO'].value_counts()
 
 df.to_csv('2022.csv', index=False)
 
+#merge con preferentes y docentes
+
 """ ############################# 2021 ############################# """
 df = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2021.csv" , sep=';')
 
@@ -62,6 +68,8 @@ df = df[df['COD_GRADO'].isin([3, 4])]
 df['COD_GRADO'].value_counts()
 
 df.to_csv('2021.csv', index=False)
+
+#merge con preferentes y docentes
 
 """ ############################# 2020 ############################# """
 df = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2020.csv" , sep=';')
@@ -76,6 +84,7 @@ df['COD_GRADO'].value_counts()
 
 df.to_csv('2020.csv', index=False)
 
+#merge con preferentes y docentes
 
 """ ######################### Unir bases ########################## """
 df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020.csv')
