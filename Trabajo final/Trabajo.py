@@ -115,6 +115,7 @@ del df5
 """ ################ Análisis exploratorio de datos ####################### """
 df.head()
 
+#Box plot para ver desertores, aprobados y reprobados
 ax = sns.countplot(x='SIT_FIN_R', data=df, palette='hls')
 for p in ax.patches:
     count = int(p.get_height())
@@ -127,8 +128,12 @@ for p in ax.patches:
 
 plt.show()
 
+#Evaluamos si categoría en blanco es desertor o no
+
 """ ##################### Modelo 1 ####################### """
 
 """ ##################### Modelo 2 ####################### """
 
 """ ##################### Modelo 3 ####################### """
+
+""" ################# Muestra aleatoria ################## """
