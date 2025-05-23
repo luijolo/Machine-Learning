@@ -29,6 +29,12 @@ página web (https://datosabiertos.mineduc.cl/) para los años correspondientes.
 
 """ ######################### Limpieza y carga ########################## """
 """ 2024 """
+%clear
+%reset -f
+!cls 
+import pandas as pd
+import os
+os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
 df = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento 2024.csv" , sep=';')
 
 df5 = df5[~df5['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
@@ -44,6 +50,12 @@ df5.to_csv('2024.csv', index=False)
 #merge con preferentes y docentes
 
 """ 2023 """
+%clear
+%reset -f
+!cls 
+import pandas as pd
+import os
+os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
 df4 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2023.csv" , sep=';')
 
 df4 = df4[~df4['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
@@ -59,6 +71,12 @@ df4.to_csv('2023.csv', index=False)
 #merge con preferentes y docentes
 
 """ 2022 """
+%clear
+%reset -f
+!cls 
+import pandas as pd
+import os
+os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
 df3 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2022.csv" , sep=';')
 
 df3 = df3[~df3['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
@@ -74,6 +92,12 @@ df3.to_csv('2022.csv', index=False)
 #merge con preferentes y docentes
 
 """ 2021 """
+%clear
+%reset -f
+!cls 
+import pandas as pd
+import os
+os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
 df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2021.csv" , sep=';')
 
 df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
@@ -89,6 +113,12 @@ df2.to_csv('2021.csv', index=False)
 #merge con preferentes y docentes
 
 """ 2020 """
+%clear
+%reset -f
+!cls 
+import pandas as pd
+import os
+os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
 df1 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2020.csv" , sep=';')
 
 df1 = df1[~df1['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
@@ -101,6 +131,63 @@ df1['COD_GRADO'].value_counts()
 
 df1.to_csv('2020.csv', index=False)
 
+""" 2019 """
+%clear
+%reset -f
+!cls 
+import pandas as pd
+import os
+os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
+df1 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2019.csv" , sep=';')
+
+df1 = df1[~df1['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df1['COD_ENSE'].value_counts()
+
+df1 = df1[df1['COD_GRADO'].isin([3, 4])]
+
+df1['COD_GRADO'].value_counts()
+
+df1.to_csv('2019.csv', index=False)
+
+""" 2018 """
+%clear
+%reset -f
+!cls 
+import pandas as pd
+import os
+os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
+df1 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2018.csv" , sep=';')
+
+df1 = df1[~df1['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df1['COD_ENSE'].value_counts()
+
+df1 = df1[df1['COD_GRADO'].isin([3, 4])]
+
+df1['COD_GRADO'].value_counts()
+
+df1.to_csv('2018.csv', index=False)
+
+""" 2017 """
+%clear
+%reset -f
+!cls 
+import pandas as pd
+import os
+os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
+df1 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2017.csv" , sep=';')
+
+df1 = df1[~df1['cod_ense'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df1['cod_ense'].value_counts()
+
+df1 = df1[df1['cod_ense'].isin([3, 4])]
+
+df1['cod_ense'].value_counts()
+
+df1.to_csv('2017.csv', index=False)
+
 #merge con preferentes y docentes
 
 """ ######################### Unir bases ########################## """
@@ -109,14 +196,20 @@ df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022.csv')
 df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2023.csv') 
 df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024.csv')
+df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2019.csv')
+df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018.csv')
+df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017.csv')
 
-df = pd.concat([df1, df2, df3, df4, df5], ignore_index=True) 
+df = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
 del df1 
 del df2 
 del df3
 del df4
 del df5
+del df6 
+del df7
+del df8
 
 """ ################ Análisis exploratorio de datos ####################### """
 df.head()
