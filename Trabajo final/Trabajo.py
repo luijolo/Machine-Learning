@@ -191,6 +191,7 @@ df1.to_csv('2017.csv', index=False)
 #merge con preferentes y docentes
 
 """ ######################### Unir bases ########################## """
+%reset -f
 df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020.csv')
 df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021.csv')
 df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022.csv')
@@ -200,7 +201,7 @@ df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018.csv')
 df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017.csv')
 
-df = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
+df_p1 = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
 del df1 
 del df2 
@@ -210,6 +211,8 @@ del df5
 del df6 
 del df7
 del df8
+
+df = df_p1.copy()
 
 """ ################ Análisis exploratorio de datos ####################### """
 df.head()
