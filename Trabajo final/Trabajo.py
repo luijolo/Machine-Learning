@@ -20,11 +20,11 @@ print(os.getcwd())
 Nota:
     
 Los CSV Rendimiento 2024, Rendimiento 2023, Rendimiento 2022, 
-Rendimiento 2021, Rendimiento 2020, Preferencia 2024, Preferencia 2023, 
-Preferencia 2022, Preferencia 2021, Preferencia 2020, Docentes 2024, 
-Docentes 2023, Docentes 2022, Docentes 2021 y Docentes 2020 son los archivos 
-originales publicados por MINEDUC (sacados de las carpetas zip) desde su 
-página web (https://datosabiertos.mineduc.cl/) para los años correspondientes.
+Rendimiento 2021, Rendimiento 2020, Rendimiento 2019, Rendimiento 2018, 
+Rendimiento 2017, PPB 2024, PPB 2023, PPB 2022, PPB 2021, PPB 2020, PPB 2019,
+PPB 2018, PPB 2017 son los archivos originales publicados por MINEDUC 
+(sacados de las carpetas zip) desde su página web 
+(https://datosabiertos.mineduc.cl/) para los años correspondientes.
 """
 
 """ ######################### Limpieza y carga ########################## """
@@ -44,12 +44,13 @@ df5.to_csv('2024.csv', index=False)
 #Preferenciales
 df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2024.csv" , sep=';')
 
-df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
-
+df2 = df2[df2['COD_GRADO'] != ' ']
+df2['COD_ENSE'] = df2['COD_ENSE'].astype(str)
+df2 = df2[df2['COD_ENSE'].isin([310, 410, 510, 610, 710, 810, 910])]
 df2['COD_ENSE'].value_counts()
 
+df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
-
 df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2024_SEP.csv', index=False)
@@ -270,7 +271,7 @@ df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestr
 
 df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
-df2['COD_ENSE'].value_counts()
+df2['COD_GRADO'].value_counts()
 
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 
@@ -302,10 +303,22 @@ del df8
 
 df = df_p1.copy()
 
-""" ################ Análisis exploratorio de datos ####################### """
+""" ################ Pre procesamiento ####################### """
+#Descripción de cada columna (tipo de dato y missings)
+df.info()
 df.head()
 
-#Box plot para ver desertores, aprobados y reprobados
+#Evaluar missing y outliers
+
+
+#Crear variable target
+
+
+#Dropear categoría en blanco SIT_FIN_R
+
+
+""" ################ Análisis exploratorio de datos ####################### """
+#Distribución de variables continuas
 ax = sns.countplot(x='SIT_FIN_R', data=df, palette='hls')
 for p in ax.patches:
     count = int(p.get_height())
@@ -318,13 +331,21 @@ for p in ax.patches:
 
 plt.show()
 
-#Evaluamos si categoría en blanco es desertor o no
+#Conteo de cada estado de var categoricas
 
-#Reeemplazar variables string por númericas
 
-#Verificar y elminar outliers
+#Correlaciones y distribuciones por clase
+
+
+""" ################ Feature Engineering ####################### """
+#Imputar outliers
+
 
 #Estandarizar/Normalizar variables
+
+
+#Reeemplazar variables string por númericas (one hot encoding)
+
 
 #Balancear set de entrenamiento 
 
