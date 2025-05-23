@@ -104,6 +104,12 @@ df1.to_csv('2020.csv', index=False)
 #merge con preferentes y docentes
 
 """ ######################### Unir bases ########################## """
+df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020.csv')
+df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021.csv')
+df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022.csv')
+df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2023.csv') 
+df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024.csv')
+
 df = pd.concat([df1, df2, df3, df4, df5], ignore_index=True) 
 
 del df1 
@@ -130,6 +136,15 @@ plt.show()
 
 #Evaluamos si categoría en blanco es desertor o no
 
+#Reeemplazar variables string por númericas
+
+#Verificar y elminar outliers
+
+#Estandarizar/Normalizar variables
+
+#Balancear set de entrenamiento 
+
+
 """ ##################### Modelo 1 ####################### """
 
 """ ##################### Modelo 2 ####################### """
@@ -138,5 +153,3 @@ plt.show()
 
 """ ################# Muestra aleatoria ################## """
 
-hola
-QUE TAL
