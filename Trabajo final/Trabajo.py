@@ -29,13 +29,7 @@ página web (https://datosabiertos.mineduc.cl/) para los años correspondientes.
 
 """ ######################### Limpieza y carga ########################## """
 """ 2024 """
-%clear
-%reset -f
-!cls 
-import pandas as pd
-import os
-os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
-df = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento 2024.csv" , sep=';')
+df5 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento 2024.csv" , sep=';')
 
 df5 = df5[~df5['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
@@ -47,7 +41,18 @@ df5['COD_GRADO'].value_counts()
 
 df5.to_csv('2024.csv', index=False)
 
-#merge con preferentes y docentes
+#Preferenciales
+df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2024.csv" , sep=';')
+
+df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df2['COD_ENSE'].value_counts()
+
+df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+
+df2['COD_GRADO'].value_counts()
+
+df2.to_csv('2024_SEP.csv', index=False)
 
 """ 2023 """
 %clear
@@ -68,7 +73,18 @@ df4['COD_GRADO'].value_counts()
 
 df4.to_csv('2023.csv', index=False)
 
-#merge con preferentes y docentes
+#Preferenciales
+df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2023.csv" , sep=';')
+
+df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df2['COD_ENSE'].value_counts()
+
+df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+
+df2['COD_GRADO'].value_counts()
+
+df2.to_csv('2023_SEP.csv', index=False)
 
 """ 2022 """
 %clear
@@ -89,7 +105,18 @@ df3['COD_GRADO'].value_counts()
 
 df3.to_csv('2022.csv', index=False)
 
-#merge con preferentes y docentes
+#Preferenciales
+df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2022.csv" , sep=';')
+
+df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df2['COD_ENSE'].value_counts()
+
+df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+
+df2['COD_GRADO'].value_counts()
+
+df2.to_csv('2022_SEP.csv', index=False)
 
 """ 2021 """
 %clear
@@ -110,7 +137,18 @@ df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2021.csv', index=False)
 
-#merge con preferentes y docentes
+#Preferenciales
+df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2021.csv" , sep=';')
+
+df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df2['COD_ENSE'].value_counts()
+
+df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+
+df2['COD_GRADO'].value_counts()
+
+df2.to_csv('2021_SEP.csv', index=False)
 
 """ 2020 """
 %clear
@@ -131,6 +169,19 @@ df1['COD_GRADO'].value_counts()
 
 df1.to_csv('2020.csv', index=False)
 
+#Preferenciales
+df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2020.csv" , sep=';')
+
+df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df2['COD_ENSE'].value_counts()
+
+df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+
+df2['COD_GRADO'].value_counts()
+
+df2.to_csv('2020_SEP.csv', index=False)
+
 """ 2019 """
 %clear
 %reset -f
@@ -149,6 +200,19 @@ df1 = df1[df1['COD_GRADO'].isin([3, 4])]
 df1['COD_GRADO'].value_counts()
 
 df1.to_csv('2019.csv', index=False)
+
+#Preferenciales
+df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2019.csv" , sep=';')
+
+df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df2['COD_ENSE'].value_counts()
+
+df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+
+df2['COD_GRADO'].value_counts()
+
+df2.to_csv('2019_SEP.csv', index=False)
 
 """ 2018 """
 %clear
@@ -169,6 +233,19 @@ df1['COD_GRADO'].value_counts()
 
 df1.to_csv('2018.csv', index=False)
 
+#Preferenciales
+df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2018.csv" , sep=';')
+
+df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df2['COD_ENSE'].value_counts()
+
+df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+
+df2['COD_GRADO'].value_counts()
+
+df2.to_csv('2018_SEP.csv', index=False)
+
 """ 2017 """
 %clear
 %reset -f
@@ -188,7 +265,18 @@ df1['cod_ense'].value_counts()
 
 df1.to_csv('2017.csv', index=False)
 
-#merge con preferentes y docentes
+#Preferenciales
+df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2017.csv" , sep=';')
+
+df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df2['COD_ENSE'].value_counts()
+
+df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+
+df2['COD_GRADO'].value_counts()
+
+df2.to_csv('2017_SEP.csv', index=False)
 
 """ ######################### Unir bases ########################## """
 %reset -f
