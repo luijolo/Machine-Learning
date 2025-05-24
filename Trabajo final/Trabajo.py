@@ -358,7 +358,10 @@ df8.columns = df8.columns.str.upper()
 
 df_p1 = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
-del df1, df2 , df3, df4, df5, df6, df7, df8, dfs, i, duplicated_mruns
+df_p1['AGNO'] = df_p1['AGNO'].astype(int)
+df_p1['MRUN'] = df_p1['MRUN'].astype(int)
+
+del df1, df2 , df3, df4, df5, df6, df7, df8, duplicated_mruns
 
 df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020_SEP.csv')
 df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021_SEP.csv')
@@ -371,7 +374,7 @@ df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 
 df8.columns = df8.columns.str.upper()
 
-    #df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
+    df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
     duplicated_mruns = df1['MRUN'].value_counts()
     duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
     df1 = df1[~df1['MRUN'].isin(duplicated_mruns)]
@@ -413,6 +416,9 @@ df8.columns = df8.columns.str.upper()
 
 df_p2= pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
+df_p2['AGNO'] = df_p2['AGNO'].astype(int)
+df_p2['MRUN'] = df_p2['MRUN'].astype(int)
+
 df_p2 = df_p2.drop(columns=['GEN_ALU', 'FEC_NAC_ALU', 'RBD', 'DGV_RBD', 'NOM_RBD'])
 df_p2 = df_p2.drop(columns=['NOM_REG_RBD_A', 'COD_REG_RBD', 'COD_PRO_RBD'])
 df_p2 = df_p2.drop(columns=['COD_COM_RBD', 'NOM_COM_RBD', 'COD_DEPROV_RBD']) 
@@ -422,9 +428,11 @@ df_p2 = df_p2.drop(columns=['COD_GRADO', 'LET_CUR', 'COD_JOR', 'RURAL_RBD'])
 
 del df1, df2 , df3, df4, df5, df6, df7, df8, duplicated_mruns
 
-df = pd.merge(df_p1, df_p2, on=['MRUN', 'AGNO'], how='left')
+df = pd.merge(df_p1, df_p2, on=['MRUN', 'AGNO'], how='inner')
 
 del df_p1, df_p2
+
+df.to_csv('Basefinal.csv', index=False)
 
 """ ################ Pre procesamiento ####################### """
 #Descripción de cada columna (tipo de dato y missings)
@@ -554,4 +562,3 @@ plt.show()
 """ ##################### Modelo 3 ####################### """
 
 """ ################# Muestra aleatoria ################## """
-
