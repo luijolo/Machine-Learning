@@ -432,8 +432,6 @@ df = pd.merge(df_p1, df_p2, on=['MRUN', 'AGNO'], how='inner')
 
 del df_p1, df_p2
 
-df.to_csv('Basefinal.csv', index=False)
-
 """ ################ Pre procesamiento ####################### """
 #Descripción de cada columna (tipo de dato y missings)
 df.head()
@@ -462,7 +460,7 @@ COD_JOR: Código jornada
 COD_TIP_CUR: Índice de tipo de curso
 COD_DES_CUR: Descripción de curso
 MRUN: Máscara del RUN del estudiante
-GEN_ALU: Género
+GEN_ALU: Género (1 =  masculino)
 FEC_NAC_ALU: Fecha de nacimiento
 EDAD_ALU: Edad al 30 de junio
 COD_REG_ALU: Región residencia alumno
@@ -478,21 +476,21 @@ SIT_FIN_R: Situación final de promoción (con traslado)
 COD_MEN: Mención
 NOMBRE_SLEP:
 CRITERIO_SEP:
-CONVENIO_SEP: Establecimiento tiene convenio SEP
+CONVENIO_SEP: Establecimiento tiene convenio SEP (1 =  si)
 AÑO_INGRESO_SEP: Año inicio convenio SEP
 CLASIFICACION_SEP: Clasificación de convenio SEP
-EE_GRATUITO: Indicador de gratuidad de establecimiento
-COD_ENSE3:
-COD_GRADO2: 
+EE_GRATUITO: Indicador de gratuidad de establecimiento (1 =  si)
 GRADO_SEP: Nivel de SEP
-PRIORITARIO_ALU: Indicador de si alumno es prioritario
-PREFERENTE_ALU: Indicador de si alumno es preferente
-BEN_SEP: Indicador de si alumno es beneficiario de SEP
+PRIORITARIO_ALU: Indicador de si alumno es prioritario (1 =  si)
+PREFERENTE_ALU: Indicador de si alumno es preferente (1 =  si)
+BEN_SEP: Indicador de si alumno es beneficiario de SEP (1 =  si)
 FEC_DEFUN_ALU: 
 """
 df.isnull().sum().sort_values(ascending=False) #Total de missings
 
-#Outliers
+df['ASISTENCIA'] = pd.to_numeric(df['ASISTENCIA'], errors='coerce') #Ajustar para que todas sean numericas
+df['PROM_GRAL'] = (df['PROM_GRAL'].astype(str).str.replace(',', '.', regex=False).astype(float))
+df['EDAD_ALU']   = pd.to_numeric(df['EDAD_ALU'], errors='coerce')
 
 df = df[df['SIT_FIN_R'] != ' '] #Se dropea porque son valores vacíos
 
@@ -500,37 +498,46 @@ df['DESERTAR'] = (df['SIT_FIN_R'] == 'Y').astype(int) #Crear variable target
 
 df = df[df['COD_DEPE'] == 4] #Dropear particulares pagados porque no estan obligador a reportar 
 
-df['ASISTENCIA'] = df['ASISTENCIA'].astype(int) #Ajustar para que todas sean numericas
-df['PROM_GRAL'] = pd.to_numeric(df['PROM_GRAL'], errors='coerce')
-df['EDAD_ALU'] = pd.to_numeric(df['EDAD_ALU'], errors='coerce')
-
 """ ################ Análisis exploratorio de datos ####################### """
-#Distribución de variables continuas
-continuas = [['ASISTENCIA', 'PROM_GRAL','EDAD_ALU']]
+#Outliers
+df['X_bin'] = pd.qcut(df['PROM_GRAL'], q=20, duplicates='drop')  # 20 quantile bins
 
-fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(17,5))  # Una columna, tres filas
+binned = df.groupby('X_bin', observed=True).agg({'PROM_GRAL': 'mean','ASISTENCIA': 'mean'}).reset_index()
 
-for i, (col, xlabel, title) in enumerate(continuas):
-    data = df[col]
-    axes[i].hist(data, color='blue', edgecolor='black')
-    axes[i].set_xlabel(xlabel)
-    axes[i].set_ylabel('Frecuencia')
-    axes[i].set_title(title)
-
+plt.figure(figsize=(8,6))
+sns.scatterplot(data=binned, x='PROM_GRAL', y='ASISTENCIA')  # Use numeric PROM_GRAL
+plt.xlabel('PROM_GRAL (Binned Means)')
+plt.ylabel('ASISTENCIA (Mean)')
+plt.title('Binscatter: ASISTENCIA vs PROM_GRAL')
 plt.tight_layout()
 plt.show()
 
-#Conteo de cada estado de var categoricas
-ax = sns.countplot(x='SIT_FIN_R', data=df, palette='hls')
-for p in ax.patches:
-    count = int(p.get_height())
-    ax.annotate(count,                       
-        (p.get_x() + p.get_width() / 2., p.get_height()),  
-        ha='center', va='bottom',       
-        fontsize=10, color='black',     
-        xytext=(0, 3), textcoords='offset points'  
-    )
-    plt.show()
+df['A_bin'] = pd.qcut(df['EDAD_ALU'], q=20, duplicates='drop')  # 20 quantile bins
+
+binned = df.groupby('A_bin', observed=True).agg({'EDAD_ALU': 'mean','ASISTENCIA': 'mean'}).reset_index()
+
+plt.figure(figsize=(8,6))
+sns.scatterplot(data=binned, x='EDAD_ALU', y='ASISTENCIA')  # Use numeric PROM_GRAL
+plt.xlabel('Edad (Binned Means)')
+plt.ylabel('ASISTENCIA (Mean)')
+plt.title('Binscatter: ASISTENCIA vs Edad')
+plt.tight_layout()
+plt.show()
+
+#Distribución de variables numericas
+variables = ['ASISTENCIA', 'PROM_GRAL', 'EDAD_ALU']
+
+plt.figure(figsize=(15, 4))
+
+for i, var in enumerate(variables):
+    plt.subplot(1, 3, i + 1)
+    plt.hist(df[var].dropna(), bins=30, color='skyblue', edgecolor='black')
+    plt.title(f'Histogram of {var}')
+    plt.xlabel(var)
+    plt.ylabel('Frequency')
+
+plt.tight_layout()
+plt.show()
 
 #Correlaciones y distribuciones por clase
 numericos = df[['ASISTENCIA', 'PROM_GRAL', 'EDAD_ALU']]
@@ -539,6 +546,37 @@ corr = numericos.corr()
 plt.figure(figsize=(10, 8))
 sns.heatmap(corr, annot=False, cmap='coolwarm', fmt=".2f", square=True)
 plt.title("Heatmap de correlaciones")
+plt.tight_layout()
+plt.show()
+
+#Conteo de cada estado de variables categoricas
+categorias = ['GEN_ALU','SIT_FIN_R','PRIORITARIO_ALU', 'PREFERENTE_ALU',
+              'BEN_SEP', 'RURAL_RBD', 'COD_DEPE', 'COD_JOR', 
+              'CONVENIO_SEP', 'EE_GRATUITO']
+
+df_graph = df[df['SIT_FIN_R'].isin(['P', 'Y'])]
+
+plt.figure(figsize=(20, 25))
+
+for i, var in enumerate(categorias):
+    ax = plt.subplot(5, 2, i + 1)
+    sns.countplot(data=df_graph, x=var, palette='pastel', ax=ax)
+    ax.set_title(f'Distribucion de {var} para aprobados y desertores')
+    ax.set_xlabel(var)
+    ax.set_ylabel("Cantidad")
+    ax.tick_params(axis='x', rotation=45)
+
+    total = df_graph[var].notna().sum()
+
+    # Annotate each bar with % of total
+    for patch in ax.patches:
+        count = patch.get_height()
+        if count > 0:
+            pct = 100 * count / total
+            ax.annotate(f'{pct:.1f}%', 
+                        (patch.get_x() + patch.get_width() / 2, count),
+                        ha='center', va='bottom', fontsize=9)
+
 plt.tight_layout()
 plt.show()
 
