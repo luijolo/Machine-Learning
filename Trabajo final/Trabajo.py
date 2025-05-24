@@ -296,7 +296,15 @@ df2['COD_GRADO'].value_counts()
 df2.to_csv('2017_SEP.csv', index=False)
 
 """ ######################### Cargar bases ########################## """
+%clear
 %reset -f
+!cls 
+import os
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
+
 df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020.csv')
 df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021.csv')
 df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022.csv')
@@ -306,31 +314,56 @@ df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018.csv')
 df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017.csv')
 
+df8.columns = df8.columns.str.upper()
+
 df_p1 = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
-del df1, df2 , df3
-del df2 
-del df3
-del df4
-del df5
-del df6 
-del df7
-del df8
+del df1, df2 , df3, df4, df5, df6, df7, df8
 
+df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020_SEP.csv')
+df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021_SEP.csv')
+df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022_SEP.csv')
+df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2023_SEP.csv') 
+df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024_SEP.csv')
+df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2019_SEP.csv')
+df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018_SEP.csv')
+df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017_SEP.csv')
 
+df8.columns = df8.columns.str.upper()
+
+df_p2= pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
+
+del df1, df2 , df3, df4, df5, df6, df7, df8
+
+df = pd.merge(df_p1, df_p2, on=['MRUN', 'AGNO'], how='left')
+
+del df_p1 df_p2
 
 """ ################ Pre procesamiento ####################### """
 #Descripción de cada columna (tipo de dato y missings)
-df.info()
+df_p1.info()
 df.head()
+
+"""
+
+"""
 
 #Evaluar missing y outliers
 
 
+#1. Total de missings
+
+#2. Missing en particulares pagados
+count = df_p1[(df_p1['ASISTENCIA'] == 'Y') & (df_p1['COD_DEPE'] == 4)].shape[0]
+missing_asistencia = df_p1[(df_p1['ASISTENCIA'] == 50) & (df_p1['COD_DEPE'] == 4)]
+
 #Crear variable target
 
 
-#Dropear categoría en blanco SIT_FIN_R
+df = df[df['SIT_FIN_R'] != ' '] #Se dropea porque son valores vacíos
+
+
+#Dropear particulares pagados ['COD_DEPE'] == 4
 
 
 """ ################ Análisis exploratorio de datos ####################### """
