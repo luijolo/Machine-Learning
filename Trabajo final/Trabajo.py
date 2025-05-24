@@ -316,9 +316,49 @@ df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 
 df8.columns = df8.columns.str.upper()
 
+    df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df1['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df1 = df1[~df1['MRUN'].isin(duplicated_mruns)]
+    
+    df2['MRUN'] = df2['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df2['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df2 = df2[~df2['MRUN'].isin(duplicated_mruns)]
+    
+    df3['MRUN'] = df3['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df3['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df3 = df3[~df3['MRUN'].isin(duplicated_mruns)]
+    
+    df4['MRUN'] = df4['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df4['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df4 = df4[~df4['MRUN'].isin(duplicated_mruns)]
+    
+    df5['MRUN'] = df5['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df5['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df5 = df5[~df5['MRUN'].isin(duplicated_mruns)]
+    
+    df6['MRUN'] = df6['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df6['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df6 = df6[~df6['MRUN'].isin(duplicated_mruns)]
+    
+    df7['MRUN'] = df7['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df7['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df7 = df7[~df7['MRUN'].isin(duplicated_mruns)]
+    
+    df8['MRUN'] = df8['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df8['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df8 = df8[~df8['MRUN'].isin(duplicated_mruns)]
+
 df_p1 = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
-del df1, df2 , df3, df4, df5, df6, df7, df8
+del df1, df2 , df3, df4, df5, df6, df7, df8, dfs, i, duplicated_mruns
 
 df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020_SEP.csv')
 df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021_SEP.csv')
@@ -331,43 +371,148 @@ df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 
 df8.columns = df8.columns.str.upper()
 
+    #df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df1['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df1 = df1[~df1['MRUN'].isin(duplicated_mruns)]
+    
+    df2['MRUN'] = df2['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df2['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df2 = df2[~df2['MRUN'].isin(duplicated_mruns)]
+    
+    df3['MRUN'] = df3['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df3['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df3 = df3[~df3['MRUN'].isin(duplicated_mruns)]
+    
+    df4['MRUN'] = df4['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df4['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df4 = df4[~df4['MRUN'].isin(duplicated_mruns)]
+    
+    df5['MRUN'] = df5['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df5['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df5 = df5[~df5['MRUN'].isin(duplicated_mruns)]
+    
+    df6['MRUN'] = df6['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df6['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df6 = df6[~df6['MRUN'].isin(duplicated_mruns)]
+    
+    df7['MRUN'] = df7['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df7['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df7 = df7[~df7['MRUN'].isin(duplicated_mruns)]
+    
+    df8['MRUN'] = df8['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df8['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df8 = df8[~df8['MRUN'].isin(duplicated_mruns)]
+
 df_p2= pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
-del df1, df2 , df3, df4, df5, df6, df7, df8
+df_p2 = df_p2.drop(columns=['GEN_ALU', 'FEC_NAC_ALU', 'RBD', 'DGV_RBD', 'NOM_RBD'])
+df_p2 = df_p2.drop(columns=['NOM_REG_RBD_A', 'COD_REG_RBD', 'COD_PRO_RBD'])
+df_p2 = df_p2.drop(columns=['COD_COM_RBD', 'NOM_COM_RBD', 'COD_DEPROV_RBD']) 
+df_p2 = df_p2.drop(columns=['NOM_DEPROV_RBD', 'COD_DEPE', 'COD_DEPE2'])
+df_p2 = df_p2.drop(columns=['ESTADO_ESTAB', 'NOMBRE_SLEP', 'COD_ENSE', 'COD_ENSE2']) 
+df_p2 = df_p2.drop(columns=['COD_GRADO', 'LET_CUR', 'COD_JOR', 'RURAL_RBD'])
+
+del df1, df2 , df3, df4, df5, df6, df7, df8, duplicated_mruns
 
 df = pd.merge(df_p1, df_p2, on=['MRUN', 'AGNO'], how='left')
 
-del df_p1 df_p2
+del df_p1, df_p2
 
 """ ################ Pre procesamiento ####################### """
 #Descripción de cada columna (tipo de dato y missings)
-df_p1.info()
 df.head()
 
 """
-
+AGNO: Año de los datos
+RBD: Rol del establecimiento
+DGV_RBD: Dígito verificador del establecimiento
+NOM_RBD: Nombre establecimiento
+COD_REG_RBD: Código región del establecimiento
+NOM_REG_RBD_A: Nombre región del establecimiento
+COD_PRO_RBD: Código provincia del establecimiento
+COD_COM_RBD: Código comuna del establecimiento
+NOM_COM_RBD: Nombre de la comuna
+COD_DEPROV_RBD: Código departamento provincial del establecimiento
+NOM_DEPROV_RBD: Nombre departamento provincial del establecimiento
+COD_DEPE: Dependencia
+COD_DEPE2: Dependecia recodificado
+RURAL_RBD: Área (urbana o rural)
+ESTADO_ESTAB: Estado del establecimiento
+COD_ENSE: Código de tipo de enseñanza
+COD_ENSE2: Código de tipo de enseñanza por niveles
+COD_GRADO: Código de grado
+LET_CUR: Letra del curso
+COD_JOR: Código jornada
+COD_TIP_CUR: Índice de tipo de curso
+COD_DES_CUR: Descripción de curso
+MRUN: Máscara del RUN del estudiante
+GEN_ALU: Género
+FEC_NAC_ALU: Fecha de nacimiento
+EDAD_ALU: Edad al 30 de junio
+COD_REG_ALU: Región residencia alumno
+COD_COM_ALU: Comuna residencia alumno
+NOM_COM_ALU: Nombre comuna residencia alumno
+COD_RAMA: Código de rama del curso (TP)
+COD_SEC: Código de sector económico (TP)
+COD_ESPE: Código de especialidad (TP)
+PROM_GRAL: Promedio del año
+ASISTENCIA: Porcentaje asistencia en el año
+SIT_FIN: Situación final de promoción
+SIT_FIN_R: Situación final de promoción (con traslado)
+COD_MEN: Mención
+NOMBRE_SLEP:
+CRITERIO_SEP:
+CONVENIO_SEP: Establecimiento tiene convenio SEP
+AÑO_INGRESO_SEP: Año inicio convenio SEP
+CLASIFICACION_SEP: Clasificación de convenio SEP
+EE_GRATUITO: Indicador de gratuidad de establecimiento
+COD_ENSE3:
+COD_GRADO2: 
+GRADO_SEP: Nivel de SEP
+PRIORITARIO_ALU: Indicador de si alumno es prioritario
+PREFERENTE_ALU: Indicador de si alumno es preferente
+BEN_SEP: Indicador de si alumno es beneficiario de SEP
+FEC_DEFUN_ALU: 
 """
+df.isnull().sum().sort_values(ascending=False) #Total de missings
 
-#Evaluar missing y outliers
-
-
-#1. Total de missings
-
-#2. Missing en particulares pagados
-count = df_p1[(df_p1['ASISTENCIA'] == 'Y') & (df_p1['COD_DEPE'] == 4)].shape[0]
-missing_asistencia = df_p1[(df_p1['ASISTENCIA'] == 50) & (df_p1['COD_DEPE'] == 4)]
-
-#Crear variable target
-
+#Outliers
 
 df = df[df['SIT_FIN_R'] != ' '] #Se dropea porque son valores vacíos
 
+df['DESERTAR'] = (df['SIT_FIN_R'] == 'Y').astype(int) #Crear variable target
 
-#Dropear particulares pagados ['COD_DEPE'] == 4
+df = df[df['COD_DEPE'] == 4] #Dropear particulares pagados porque no estan obligador a reportar 
 
+df['ASISTENCIA'] = df['ASISTENCIA'].astype(int) #Ajustar para que todas sean numericas
+df['PROM_GRAL'] = pd.to_numeric(df['PROM_GRAL'], errors='coerce')
+df['EDAD_ALU'] = pd.to_numeric(df['EDAD_ALU'], errors='coerce')
 
 """ ################ Análisis exploratorio de datos ####################### """
 #Distribución de variables continuas
+continuas = [['ASISTENCIA', 'PROM_GRAL','EDAD_ALU']]
+
+fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(17,5))  # Una columna, tres filas
+
+for i, (col, xlabel, title) in enumerate(continuas):
+    data = df[col]
+    axes[i].hist(data, color='blue', edgecolor='black')
+    axes[i].set_xlabel(xlabel)
+    axes[i].set_ylabel('Frecuencia')
+    axes[i].set_title(title)
+
+plt.tight_layout()
+plt.show()
+
+#Conteo de cada estado de var categoricas
 ax = sns.countplot(x='SIT_FIN_R', data=df, palette='hls')
 for p in ax.patches:
     count = int(p.get_height())
@@ -377,14 +522,17 @@ for p in ax.patches:
         fontsize=10, color='black',     
         xytext=(0, 3), textcoords='offset points'  
     )
-
-plt.show()
-
-#Conteo de cada estado de var categoricas
-
+    plt.show()
 
 #Correlaciones y distribuciones por clase
+numericos = df[['ASISTENCIA', 'PROM_GRAL', 'EDAD_ALU']]
 
+corr = numericos.corr()
+plt.figure(figsize=(10, 8))
+sns.heatmap(corr, annot=False, cmap='coolwarm', fmt=".2f", square=True)
+plt.title("Heatmap de correlaciones")
+plt.tight_layout()
+plt.show()
 
 """ ################ Feature Engineering ####################### """
 #Imputar outliers
