@@ -13,7 +13,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
+os.chdir(r"C:\Users\LENOVO\Documents\GitHub\Machine-Learning\Trabajo final")
 print(os.getcwd())
 
 """ 
@@ -303,7 +303,10 @@ import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-os.chdir("/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final")
+os.chdir(r"C:\Users\LENOVO\Documents\GitHub\Machine-Learning\Trabajo final")
+# HOLA COMO ESTAS 
+
+
 
 df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020.csv')
 df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021.csv')
@@ -316,45 +319,45 @@ df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 
 df8.columns = df8.columns.str.upper()
 
-df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
-duplicated_mruns = df1['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df1 = df1[~df1['MRUN'].isin(duplicated_mruns)]
-
-df2['MRUN'] = df2['MRUN'].astype(str).str.strip()
-duplicated_mruns = df2['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df2 = df2[~df2['MRUN'].isin(duplicated_mruns)]
-
-df3['MRUN'] = df3['MRUN'].astype(str).str.strip()
-duplicated_mruns = df3['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df3 = df3[~df3['MRUN'].isin(duplicated_mruns)]
-
-df4['MRUN'] = df4['MRUN'].astype(str).str.strip()
-duplicated_mruns = df4['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df4 = df4[~df4['MRUN'].isin(duplicated_mruns)]
-
-df5['MRUN'] = df5['MRUN'].astype(str).str.strip()
-duplicated_mruns = df5['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df5 = df5[~df5['MRUN'].isin(duplicated_mruns)]
-
-df6['MRUN'] = df6['MRUN'].astype(str).str.strip()
-duplicated_mruns = df6['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df6 = df6[~df6['MRUN'].isin(duplicated_mruns)]
-
-df7['MRUN'] = df7['MRUN'].astype(str).str.strip()
-duplicated_mruns = df7['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df7 = df7[~df7['MRUN'].isin(duplicated_mruns)]
-
-df8['MRUN'] = df8['MRUN'].astype(str).str.strip()
-duplicated_mruns = df8['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df8 = df8[~df8['MRUN'].isin(duplicated_mruns)]
+    df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df1['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df1 = df1[~df1['MRUN'].isin(duplicated_mruns)]
+    
+    df2['MRUN'] = df2['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df2['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df2 = df2[~df2['MRUN'].isin(duplicated_mruns)]
+    
+    df3['MRUN'] = df3['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df3['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df3 = df3[~df3['MRUN'].isin(duplicated_mruns)]
+    
+    df4['MRUN'] = df4['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df4['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df4 = df4[~df4['MRUN'].isin(duplicated_mruns)]
+    
+    df5['MRUN'] = df5['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df5['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df5 = df5[~df5['MRUN'].isin(duplicated_mruns)]
+    
+    df6['MRUN'] = df6['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df6['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df6 = df6[~df6['MRUN'].isin(duplicated_mruns)]
+    
+    df7['MRUN'] = df7['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df7['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df7 = df7[~df7['MRUN'].isin(duplicated_mruns)]
+    
+    df8['MRUN'] = df8['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df8['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df8 = df8[~df8['MRUN'].isin(duplicated_mruns)]
 
 df_p1 = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
@@ -374,45 +377,45 @@ df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 
 df8.columns = df8.columns.str.upper()
 
-df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
-duplicated_mruns = df1['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df1 = df1[~df1['MRUN'].isin(duplicated_mruns)]
-
-df2['MRUN'] = df2['MRUN'].astype(str).str.strip()
-duplicated_mruns = df2['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df2 = df2[~df2['MRUN'].isin(duplicated_mruns)]
-
-df3['MRUN'] = df3['MRUN'].astype(str).str.strip()
-duplicated_mruns = df3['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df3 = df3[~df3['MRUN'].isin(duplicated_mruns)]
-
-df4['MRUN'] = df4['MRUN'].astype(str).str.strip()
-duplicated_mruns = df4['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df4 = df4[~df4['MRUN'].isin(duplicated_mruns)]
-
-df5['MRUN'] = df5['MRUN'].astype(str).str.strip()
-duplicated_mruns = df5['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df5 = df5[~df5['MRUN'].isin(duplicated_mruns)]
-
-df6['MRUN'] = df6['MRUN'].astype(str).str.strip()
-duplicated_mruns = df6['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df6 = df6[~df6['MRUN'].isin(duplicated_mruns)]
-
-df7['MRUN'] = df7['MRUN'].astype(str).str.strip()
-duplicated_mruns = df7['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df7 = df7[~df7['MRUN'].isin(duplicated_mruns)]
-
-df8['MRUN'] = df8['MRUN'].astype(str).str.strip()
-duplicated_mruns = df8['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df8 = df8[~df8['MRUN'].isin(duplicated_mruns)]
+    df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df1['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df1 = df1[~df1['MRUN'].isin(duplicated_mruns)]
+    
+    df2['MRUN'] = df2['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df2['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df2 = df2[~df2['MRUN'].isin(duplicated_mruns)]
+    
+    df3['MRUN'] = df3['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df3['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df3 = df3[~df3['MRUN'].isin(duplicated_mruns)]
+    
+    df4['MRUN'] = df4['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df4['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df4 = df4[~df4['MRUN'].isin(duplicated_mruns)]
+    
+    df5['MRUN'] = df5['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df5['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df5 = df5[~df5['MRUN'].isin(duplicated_mruns)]
+    
+    df6['MRUN'] = df6['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df6['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df6 = df6[~df6['MRUN'].isin(duplicated_mruns)]
+    
+    df7['MRUN'] = df7['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df7['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df7 = df7[~df7['MRUN'].isin(duplicated_mruns)]
+    
+    df8['MRUN'] = df8['MRUN'].astype(str).str.strip()
+    duplicated_mruns = df8['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    df8 = df8[~df8['MRUN'].isin(duplicated_mruns)]
 
 df_p2= pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
@@ -430,14 +433,12 @@ del df1, df2 , df3, df4, df5, df6, df7, df8, duplicated_mruns
 
 df = pd.merge(df_p1, df_p2, on=['MRUN', 'AGNO'], how='inner')
 
+print(f"Observaciones después del merge: {len(df):,}") # 2,486,512 obs
+
 del df_p1, df_p2
-
-df.to_csv('df_merged.csv', index=False)
-
 
 """ ################ Pre procesamiento ####################### """
 #Descripción de cada columna (tipo de dato y missings)
-df = pd.read_csv("/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final/df_merged.csv")
 df.head()
 
 """
@@ -500,7 +501,7 @@ df = df[df['SIT_FIN_R'] != ' '] #Se dropea porque son valores vacíos
 
 df['DESERTAR'] = (df['SIT_FIN_R'] == 'Y').astype(int) #Crear variable target
 
-df = df[df['COD_DEPE'] != 4] #Dropear particulares pagados porque no estan obligados a reportar asistencia
+df = df[df['COD_DEPE'] == 4] #Dropear particulares pagados porque no estan obligador a reportar 
 
 """ ################ Análisis exploratorio de datos ####################### """
 #Outliers
@@ -583,6 +584,12 @@ for i, var in enumerate(categorias):
 
 plt.tight_layout()
 plt.show()
+
+print(f"Dataset final:")  
+print(f"Observaciones: {df.shape[0]:,}")  # 33,630
+print(f"Variables: {df.shape[1]}")   # 53
+print(f"Dimensiones: {df.shape}")  #(33630, 53)
+
 
 """ ################ Feature Engineering ####################### """
 #Imputar outliers
