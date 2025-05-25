@@ -499,7 +499,6 @@ df = df[df['SIT_FIN_R'] != ' '] #Se dropea porque son valores vacíos
 df['DESERTAR'] = (df['SIT_FIN_R'] == 'Y').astype(int) #Crear variable target
 
 df = df[df['COD_DEPE2'] != 3] #Dropear particulares pagados porque no estan obligados a reportar asistencia
->>>>>>> Stashed changes
 
 """ ################ Análisis exploratorio de datos ####################### """
 #Outliers
