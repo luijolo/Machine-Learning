@@ -556,7 +556,7 @@ plt.show()
 #Conteo de cada estado de variables categoricas
 categorias = ['GEN_ALU','SIT_FIN_R','PRIORITARIO_ALU', 'PREFERENTE_ALU',
               'BEN_SEP', 'RURAL_RBD', 'COD_DEPE2', 'COD_JOR', 
-              'CONVENIO_SEP', 'EE_GRATUITO']
+              'CRITERIO_SEP', 'EE_GRATUITO']
 
 df_graph = df[df['SIT_FIN_R'].isin(['P', 'Y'])]
 
