@@ -498,7 +498,11 @@ df = df[df['SIT_FIN_R'] != ' '] #Se dropea porque son valores vacíos
 
 df['DESERTAR'] = (df['SIT_FIN_R'] == 'Y').astype(int) #Crear variable target
 
+<<<<<<< Updated upstream
 df = df[df['COD_DEPE'] == 4] #Dropear particulares pagados porque no estan obligador a reportar 
+=======
+df = df[df['COD_DEPE2'] != 3] #Dropear particulares pagados porque no estan obligados a reportar asistencia
+>>>>>>> Stashed changes
 
 """ ################ Análisis exploratorio de datos ####################### """
 #Outliers
@@ -553,7 +557,7 @@ plt.show()
 
 #Conteo de cada estado de variables categoricas
 categorias = ['GEN_ALU','SIT_FIN_R','PRIORITARIO_ALU', 'PREFERENTE_ALU',
-              'BEN_SEP', 'RURAL_RBD', 'COD_DEPE', 'COD_JOR', 
+              'BEN_SEP', 'RURAL_RBD', 'COD_DEPE2', 'COD_JOR', 
               'CONVENIO_SEP', 'EE_GRATUITO']
 
 df_graph = df[df['SIT_FIN_R'].isin(['P', 'Y'])]
