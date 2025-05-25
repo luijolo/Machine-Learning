@@ -434,6 +434,8 @@ print(f"Observaciones después del merge: {len(df):,}") # 2,486,512 obs
 
 del df_p1, df_p2
 
+df.to_csv('df_merged.csv', index=False)
+
 """ ################ Pre procesamiento ####################### """
 #Descripción de cada columna (tipo de dato y missings)
 df.head()
@@ -582,10 +584,7 @@ for i, var in enumerate(categorias):
 plt.tight_layout()
 plt.show()
 
-print(f"Dataset final:")  
-print(f"Observaciones: {df.shape[0]:,}")  # 33,630
-print(f"Variables: {df.shape[1]}")   # 53
-print(f"Dimensiones: {df.shape}")  #(33630, 53)
+
 
 
 """ ################ Feature Engineering ####################### """
