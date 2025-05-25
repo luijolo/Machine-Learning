@@ -304,9 +304,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 os.chdir(r"C:\Users\LENOVO\Documents\GitHub\Machine-Learning\Trabajo final")
-# HOLA COMO ESTAS 
-
-
 
 df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020.csv')
 df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021.csv')
