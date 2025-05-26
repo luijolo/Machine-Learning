@@ -278,7 +278,7 @@ df1 = df1[df1['cod_grado'].isin([3, 4])]
 
 df1['cod_grado'].value_counts()
 
-df1.to_csv('2017_Rendimiento.csv', index=False)
+df1.to_csv('2017_Rendimiento_filtrado.csv', index=False)
 
 #Preferenciales
 df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/Preferentes_Prioritarios_y_Beneficiarios_2017_20171030_PUBL.csv', sep=';')
@@ -359,6 +359,7 @@ df_p1['AGNO'] = df_p1['AGNO'].astype(int)
 df_p1['MRUN'] = df_p1['MRUN'].astype(int)
 
 del df1, df2 , df3, df4, df5, df6, df7, df8, df9, duplicated_mruns
+
 
 # Crear variable PROM_GRAL_ANTERIOR
 # Ordenar por MRUN y AGNO para asegurar que shift funcione correctamente
