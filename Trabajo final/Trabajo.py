@@ -334,7 +334,7 @@ df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024_Rendimiento_filtrado.csv')
 df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2019_Rendimiento_filtrado.csv')
 df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018_Rendimiento_filtrado.csv')
-df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018_Rendimiento_filtrado.csv')
+df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017_Rendimiento_filtrado.csv')
 df9 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2016_Rendimiento_filtrado.csv')
 
 df8.columns = df8.columns.str.upper()
@@ -345,7 +345,19 @@ dfs = [df1, df2, df3, df4, df5, df6, df7, df8, df9]
 
 # Procesar cada DataFrame para eliminar duplicados en MRUN
 for i in range(len(dfs)):
+    # Convertir MRUN a string y eliminar espacios
     dfs[i]['MRUN'] = dfs[i]['MRUN'].astype(str).str.strip()
+    
+    # Reemplazar comas por puntos en PROM_GRAL y convertir a float
+    if dfs[i]['PROM_GRAL'].dtype == 'object':
+        dfs[i]['PROM_GRAL'] = dfs[i]['PROM_GRAL'].str.replace(',', '.', regex=False)
+    dfs[i]['PROM_GRAL'] = pd.to_numeric(dfs[i]['PROM_GRAL'], errors='coerce')
+    
+    # Verificar valores no numéricos en PROM_GRAL
+    if dfs[i]['PROM_GRAL'].isna().sum() > 0:
+        print(f"Valores no numéricos en PROM_GRAL en df{i+1}: {dfs[i]['PROM_GRAL'].isna().sum()}")
+    
+    # Eliminar duplicados en MRUN
     duplicated_mruns = dfs[i]['MRUN'].value_counts()
     duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
     dfs[i] = dfs[i][~dfs[i]['MRUN'].isin(duplicated_mruns)]
@@ -357,9 +369,9 @@ df_p1 = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8, df9], ignore_index=Tr
 
 df_p1['AGNO'] = df_p1['AGNO'].astype(int)
 df_p1['MRUN'] = df_p1['MRUN'].astype(int)
+df_p1['PROM_GRAL'] = df_p1['PROM_GRAL'].astype(float)  # Asegurar que PROM_GRAL sea float
 
 del df1, df2 , df3, df4, df5, df6, df7, df8, df9, duplicated_mruns
-
 
 # Crear variable PROM_GRAL_ANTERIOR
 # Ordenar por MRUN y AGNO para asegurar que shift funcione correctamente
@@ -369,7 +381,7 @@ df_p1 = df_p1.sort_values(['MRUN', 'AGNO'])
 df_p1['PROM_GRAL_ANTERIOR'] = df_p1.groupby('MRUN')['PROM_GRAL'].shift(1)
 
 # Opcional: Manejar valores nulos (si no hay dato del año anterior)
-df_p1['PROM_GRAL_ANTERIOR'] = df_p1['PROM_GRAL_ANTERIOR'].fillna(np.nan)  # O usa otro valor, como np.nan
+df_p1['PROM_GRAL_ANTERIOR'] = df_p1['PROM_GRAL_ANTERIOR'].fillna(np.nan)
 
 # Eliminar los datos de 2016
 df_p1 = df_p1[df_p1['AGNO'] != 2016]
@@ -489,6 +501,7 @@ df['DESERTAR'] = (df['SIT_FIN_R'] == 'Y').astype(int) #Crear variable target
 
 df = df[df['COD_DEPE2'] != 3] #Dropear particulares pagados porque no estan obligados a reportar asistencia
 
+
 """ ################ Análisis exploratorio de datos ####################### """
 #Outliers
 df['X_bin'] = pd.qcut(df['PROM_GRAL'], q=20, duplicates='drop')  # 20 quantile bins
@@ -572,7 +585,6 @@ plt.show()
 
 
 
-
 """ ################ Feature Engineering ####################### """
 #Imputar outliers
 
@@ -581,6 +593,41 @@ plt.show()
 
 
 #Reeemplazar variables string por númericas (one hot encoding)
+
+
+# Bucketización de COD_ENSE en tres categorías
+def map_cod_ense(cod_ense):
+    # Mapeo basado en el sistema educativo chileno
+    cientifico_humanista = [310, 363]
+    tecnico_profesional = [410, 463, 510, 563, 610, 663, 710, 763, 810, 863]
+    artistica = [910]
+
+    if cod_ense in cientifico_humanista:
+        return 'Científico Humanista'
+    elif cod_ense in tecnico_profesional:
+        return 'Técnico Profesional'
+    elif cod_ense in artistica:
+        return 'Artística'
+    else:
+        return np.nan  # Para valores no mapeados
+
+# Aplicar el mapeo
+df['TIPO_ENSENANZA'] = df['COD_ENSE'].apply(map_cod_ense)
+
+# Verificar valores únicos en TIPO_ENSENANZA
+print("Valores únicos en TIPO_ENSENANZA:", df['TIPO_ENSENANZA'].unique())
+print("Valores nulos en TIPO_ENSENANZA:", df['TIPO_ENSENANZA'].isna().sum())
+
+# One-hot encoding de TIPO_ENSENANZA
+df = pd.get_dummies(df, columns=['TIPO_ENSENANZA'], prefix='ENSE', dtype=int)
+
+# Mostrar las primeras filas para verificar
+print(df[['MRUN', 'AGNO', 'COD_ENSE', 'PROM_GRAL', 'PROM_GRAL_ANTERIOR', 
+          'ENSE_Cientifico Humanista', 'ENSE_Tecnico Profesional', 'ENSE_Artistica']].head(10))
+
+# Imprimir número de filas para depuración
+print(f"Filas en df después del merge y one-hot encoding: {len(df)}")
+
 
 
 #Balancear set de entrenamiento 
