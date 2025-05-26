@@ -322,6 +322,7 @@ df1.to_csv('2016_Rendimiento_filtrado.csv', index=False)
 !cls 
 import os
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
@@ -333,56 +334,47 @@ df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024_Rendimiento_filtrado.csv')
 df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2019_Rendimiento_filtrado.csv')
 df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018_Rendimiento_filtrado.csv')
-df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017_Rendimiento_filtrado.csv')
+df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018_Rendimiento_filtrado.csv')
+df9 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2016_Rendimiento_filtrado.csv')
 
 df8.columns = df8.columns.str.upper()
+df9.columns = df9.columns.str.upper()
 
-df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
-duplicated_mruns = df1['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df1 = df1[~df1['MRUN'].isin(duplicated_mruns)]
+# Lista de DataFrames
+dfs = [df1, df2, df3, df4, df5, df6, df7, df8, df9]
 
-df2['MRUN'] = df2['MRUN'].astype(str).str.strip()
-duplicated_mruns = df2['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df2 = df2[~df2['MRUN'].isin(duplicated_mruns)]
+# Procesar cada DataFrame para eliminar duplicados en MRUN
+for i in range(len(dfs)):
+    dfs[i]['MRUN'] = dfs[i]['MRUN'].astype(str).str.strip()
+    duplicated_mruns = dfs[i]['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    dfs[i] = dfs[i][~dfs[i]['MRUN'].isin(duplicated_mruns)]
 
-df3['MRUN'] = df3['MRUN'].astype(str).str.strip()
-duplicated_mruns = df3['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df3 = df3[~df3['MRUN'].isin(duplicated_mruns)]
+# Asignar los DataFrames modificados de vuelta
+df1, df2, df3, df4, df5, df6, df7, df8, df9 = dfs
 
-df4['MRUN'] = df4['MRUN'].astype(str).str.strip()
-duplicated_mruns = df4['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df4 = df4[~df4['MRUN'].isin(duplicated_mruns)]
-
-df5['MRUN'] = df5['MRUN'].astype(str).str.strip()
-duplicated_mruns = df5['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df5 = df5[~df5['MRUN'].isin(duplicated_mruns)]
-
-df6['MRUN'] = df6['MRUN'].astype(str).str.strip()
-duplicated_mruns = df6['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df6 = df6[~df6['MRUN'].isin(duplicated_mruns)]
-
-df7['MRUN'] = df7['MRUN'].astype(str).str.strip()
-duplicated_mruns = df7['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df7 = df7[~df7['MRUN'].isin(duplicated_mruns)]
-
-df8['MRUN'] = df8['MRUN'].astype(str).str.strip()
-duplicated_mruns = df8['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df8 = df8[~df8['MRUN'].isin(duplicated_mruns)]
-
-df_p1 = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
+df_p1 = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8, df9], ignore_index=True) 
 
 df_p1['AGNO'] = df_p1['AGNO'].astype(int)
 df_p1['MRUN'] = df_p1['MRUN'].astype(int)
 
-del df1, df2 , df3, df4, df5, df6, df7, df8, duplicated_mruns
+del df1, df2 , df3, df4, df5, df6, df7, df8, df9, duplicated_mruns
+
+# Crear variable PROM_GRAL_ANTERIOR
+# Ordenar por MRUN y AGNO para asegurar que shift funcione correctamente
+df_p1 = df_p1.sort_values(['MRUN', 'AGNO'])
+
+# Crear PROM_GRAL_ANTERIOR usando groupby y shift
+df_p1['PROM_GRAL_ANTERIOR'] = df_p1.groupby('MRUN')['PROM_GRAL'].shift(1)
+
+# Opcional: Manejar valores nulos (si no hay dato del año anterior)
+df_p1['PROM_GRAL_ANTERIOR'] = df_p1['PROM_GRAL_ANTERIOR'].fillna(np.nan)  # O usa otro valor, como np.nan
+
+# Eliminar los datos de 2016
+df_p1 = df_p1[df_p1['AGNO'] != 2016]
+
+# Mostrar las primeras filas para verificar
+print(df_p1[['MRUN', 'AGNO', 'PROM_GRAL', 'PROM_GRAL_ANTERIOR']].head(10))
 
 df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020_SEP_filtrado.csv')
 df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021_SEP_filtrado.csv')
@@ -395,45 +387,18 @@ df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/re
 
 df8.columns = df8.columns.str.upper()
 
-df1['MRUN'] = df1['MRUN'].astype(str).str.strip()
-duplicated_mruns = df1['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df1 = df1[~df1['MRUN'].isin(duplicated_mruns)]
+# Lista de DataFrames
+dfs = [df1, df2, df3, df4, df5, df6, df7, df8]
 
-df2['MRUN'] = df2['MRUN'].astype(str).str.strip()
-duplicated_mruns = df2['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df2 = df2[~df2['MRUN'].isin(duplicated_mruns)]
+# Procesar cada DataFrame para eliminar duplicados en MRUN
+for i in range(len(dfs)):
+    dfs[i]['MRUN'] = dfs[i]['MRUN'].astype(str).str.strip()
+    duplicated_mruns = dfs[i]['MRUN'].value_counts()
+    duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
+    dfs[i] = dfs[i][~dfs[i]['MRUN'].isin(duplicated_mruns)]
 
-df3['MRUN'] = df3['MRUN'].astype(str).str.strip()
-duplicated_mruns = df3['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df3 = df3[~df3['MRUN'].isin(duplicated_mruns)]
-
-df4['MRUN'] = df4['MRUN'].astype(str).str.strip()
-duplicated_mruns = df4['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df4 = df4[~df4['MRUN'].isin(duplicated_mruns)]
-
-df5['MRUN'] = df5['MRUN'].astype(str).str.strip()
-duplicated_mruns = df5['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df5 = df5[~df5['MRUN'].isin(duplicated_mruns)]
-
-df6['MRUN'] = df6['MRUN'].astype(str).str.strip()
-duplicated_mruns = df6['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df6 = df6[~df6['MRUN'].isin(duplicated_mruns)]
-
-df7['MRUN'] = df7['MRUN'].astype(str).str.strip()
-duplicated_mruns = df7['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df7 = df7[~df7['MRUN'].isin(duplicated_mruns)]
-
-df8['MRUN'] = df8['MRUN'].astype(str).str.strip()
-duplicated_mruns = df8['MRUN'].value_counts()
-duplicated_mruns = duplicated_mruns[duplicated_mruns > 1].index
-df8 = df8[~df8['MRUN'].isin(duplicated_mruns)]
+# Asignar los DataFrames modificados de vuelta
+df1, df2, df3, df4, df5, df6, df7, df8 = dfs
 
 df_p2= pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True) 
 
