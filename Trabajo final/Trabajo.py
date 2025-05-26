@@ -13,7 +13,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-os.chdir(r"C:\Users\LENOVO\Documents\GitHub\Machine-Learning\Trabajo final")
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
 print(os.getcwd())
 
 """ 
@@ -29,7 +29,7 @@ PPB 2018, PPB 2017 son los archivos originales publicados por MINEDUC
 
 """ ######################### Limpieza y carga ########################## """
 """ 2024 """
-df5 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento 2024.csv" , sep=';')
+df5 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20250212_Rendimiento_2024_20250131_WEB.csv', sep=';')
 
 df5 = df5[~df5['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
@@ -39,10 +39,10 @@ df5 = df5[df5['COD_GRADO'].isin([3, 4])]
 
 df5['COD_GRADO'].value_counts()
 
-df5.to_csv('2024.csv', index=False)
+df5.to_csv('2024_Rendimiento_filtrado.csv', index=False)
 
 #Preferenciales
-df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2024.csv" , sep=';')
+df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20241122_Preferentes_Prioritarios_y_Beneficiarios_2024_20241130_PUBL_MRUN.csv' , sep=';')
 
 df2 = df2[df2['COD_ENSE'] != ' ']
 df2['COD_ENSE'] = df2['COD_ENSE'].astype(int)
@@ -54,7 +54,7 @@ df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 df2['COD_GRADO'].value_counts()
 
-df2.to_csv('2024_SEP.csv', index=False)
+df2.to_csv('2024_SEP_filtrado.csv', index=False)
 
 """ 2023 """
 %clear
@@ -62,8 +62,8 @@ df2.to_csv('2024_SEP.csv', index=False)
 !cls 
 import pandas as pd
 import os
-os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
-df4 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2023.csv" , sep=';')
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
+df4 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20240209_Rendimiento_2023_20240131_WEB.csv', sep=';')
 
 df4 = df4[~df4['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
@@ -73,10 +73,10 @@ df4 = df4[df4['COD_GRADO'].isin([3, 4])]
 
 df4['COD_GRADO'].value_counts()
 
-df4.to_csv('2023.csv', index=False)
+df4.to_csv('2023_Rendimiento_filtrado.csv', index=False)
 
 #Preferenciales
-df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2023.csv" , sep=';')
+df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20231211_Preferentes_Prioritarios_y_Beneficiarios_2023_20231130_WEB.csv' , sep=';')
 
 df2 = df2[df2['COD_ENSE'] != ' ']
 df2['COD_ENSE'] = df2['COD_ENSE'].astype(int)
@@ -88,7 +88,7 @@ df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 df2['COD_GRADO'].value_counts()
 
-df2.to_csv('2023_SEP.csv', index=False)
+df2.to_csv('2023_SEP_filtrado.csv', index=False)
 
 """ 2022 """
 %clear
@@ -96,8 +96,8 @@ df2.to_csv('2023_SEP.csv', index=False)
 !cls 
 import pandas as pd
 import os
-os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
-df3 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2022.csv" , sep=';')
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
+df3 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20230209_Rendimiento_2022_20230131_WEB.csv', sep=';')
 
 df3 = df3[~df3['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
@@ -107,10 +107,10 @@ df3 = df3[df3['COD_GRADO'].isin([3, 4])]
 
 df3['COD_GRADO'].value_counts()
 
-df3.to_csv('2022.csv', index=False)
+df3.to_csv('2022_Rendimiento_filtrado.csv', index=False)
 
 #Preferenciales
-df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2022.csv" , sep=';')
+df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20221216_Preferentes_Prioritarios_y_Beneficiarios_2022_20221130_WEB.csv', sep=';')
 
 df2 = df2[df2['COD_ENSE'] != ' ']
 df2['COD_ENSE'] = df2['COD_ENSE'].astype(int)
@@ -122,7 +122,7 @@ df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 df2['COD_GRADO'].value_counts()
 
-df2.to_csv('2022_SEP.csv', index=False)
+df2.to_csv('2022_SEP_filtrado.csv', index=False)
 
 """ 2021 """
 %clear
@@ -130,8 +130,8 @@ df2.to_csv('2022_SEP.csv', index=False)
 !cls 
 import pandas as pd
 import os
-os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
-df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2021.csv" , sep=';')
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
+df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20220302_Rendimiento_2021_20220131_WEB.csv', sep=';')
 
 df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
@@ -141,10 +141,10 @@ df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 
 df2['COD_GRADO'].value_counts()
 
-df2.to_csv('2021.csv', index=False)
+df2.to_csv('2021_Rendimiento_filtrado.csv', index=False)
 
 #Preferenciales
-df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2021.csv" , sep=';')
+df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20211229_Preferentes_Prioritarios_y_Beneficiarios_2021_20211126_WEB.csv', sep=';')
 
 df2 = df2[df2['COD_ENSE'] != ' ']
 df2['COD_ENSE'] = df2['COD_ENSE'].astype(int)
@@ -156,7 +156,7 @@ df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 df2['COD_GRADO'].value_counts()
 
-df2.to_csv('2021_SEP.csv', index=False)
+df2.to_csv('2021_SEP_filtrado.csv', index=False)
 
 """ 2020 """
 %clear
@@ -164,8 +164,8 @@ df2.to_csv('2021_SEP.csv', index=False)
 !cls 
 import pandas as pd
 import os
-os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
-df1 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2020.csv" , sep=';')
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
+df1 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20210223_Rendimiento_2020_20210131_WEB.csv', sep=';')
 
 df1 = df1[~df1['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
@@ -175,10 +175,10 @@ df1 = df1[df1['COD_GRADO'].isin([3, 4])]
 
 df1['COD_GRADO'].value_counts()
 
-df1.to_csv('2020.csv', index=False)
+df1.to_csv('2020_Rendimiento_filtrado.csv', index=False)
 
 #Preferenciales
-df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2020.csv" , sep=';')
+df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20201209_Preferentes_Prioritarios_y_Beneficiarios_2020_20201126_WEB.csv', sep=';')
 
 df2 = df2[df2['COD_ENSE'] != ' ']
 df2['COD_ENSE'] = df2['COD_ENSE'].astype(int)
@@ -190,7 +190,7 @@ df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 df2['COD_GRADO'].value_counts()
 
-df2.to_csv('2020_SEP.csv', index=False)
+df2.to_csv('2020_SEP_filtrado.csv', index=False)
 
 """ 2019 """
 %clear
@@ -198,8 +198,8 @@ df2.to_csv('2020_SEP.csv', index=False)
 !cls 
 import pandas as pd
 import os
-os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
-df1 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2019.csv" , sep=';')
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
+df1 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20200220_Rendimiento_2019_20200131_PUBL.csv', sep=';')
 
 df1 = df1[~df1['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
@@ -209,10 +209,10 @@ df1 = df1[df1['COD_GRADO'].isin([3, 4])]
 
 df1['COD_GRADO'].value_counts()
 
-df1.to_csv('2019.csv', index=False)
+df1.to_csv('2019_Rendimiento_filtrado.csv', index=False)
 
 #Preferenciales
-df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2019.csv" , sep=';')
+df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20191122_Preferentes_Prioritarios_y_Beneficiarios_2019_20191106_PUBL.csv', sep=';')
 
 df2 = df2[df2['COD_ENSE'] != ' ']
 df2['COD_ENSE'] = df2['COD_ENSE'].astype(int)
@@ -224,7 +224,7 @@ df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 df2['COD_GRADO'].value_counts()
 
-df2.to_csv('2019_SEP.csv', index=False)
+df2.to_csv('2019_SEP_filtrado.csv', index=False)
 
 """ 2018 """
 %clear
@@ -232,8 +232,8 @@ df2.to_csv('2019_SEP.csv', index=False)
 !cls 
 import pandas as pd
 import os
-os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
-df1 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2018.csv" , sep=';')
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
+df1 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20190220_Rendimiento_2018_20190131_PUBL.csv', sep=';')
 
 df1 = df1[~df1['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
@@ -243,10 +243,10 @@ df1 = df1[df1['COD_GRADO'].isin([3, 4])]
 
 df1['COD_GRADO'].value_counts()
 
-df1.to_csv('2018.csv', index=False)
+df1.to_csv('2018_Rendimiento_filtrado.csv', index=False)
 
 #Preferenciales
-df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2018.csv" , sep=';')
+df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20181211_Preferentes_Prioritarios_y_Beneficiarios_2018_20181106_PUBL.csv', sep=';')
 
 df2 = df2[df2['COD_ENSE'] != ' ']
 df2['COD_ENSE'] = df2['COD_ENSE'].astype(int)
@@ -258,7 +258,7 @@ df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 df2['COD_GRADO'].value_counts()
 
-df2.to_csv('2018_SEP.csv', index=False)
+df2.to_csv('2018_SEP_filtrado.csv', index=False)
 
 """ 2017 """
 %clear
@@ -266,8 +266,8 @@ df2.to_csv('2018_SEP.csv', index=False)
 !cls 
 import pandas as pd
 import os
-os.chdir(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final")
-df1 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\Rendimiento_2017.csv" , sep=';')
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
+df1 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20180213_Rendimiento_2017_20180131_PUBL.csv', sep=';')
 
 df1 = df1[~df1['cod_ense'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
 
@@ -278,10 +278,10 @@ df1 = df1[df1['cod_grado'].isin([3, 4])]
 
 df1['cod_grado'].value_counts()
 
-df1.to_csv('2017.csv', index=False)
+df1.to_csv('2017_Rendimiento.csv', index=False)
 
 #Preferenciales
-df2 = pd.read_csv(r"C:\Users\Luis José López\Documents\7-Maestría\PUC\Semestre 4\Machine-Learning\Trabajo final\PPB_2017.csv" , sep=';')
+df2 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/Preferentes_Prioritarios_y_Beneficiarios_2017_20171030_PUBL.csv', sep=';')
 
 df2 = df2[df2['COD_ENSE'] != ' ']
 df2['COD_ENSE'] = df2['COD_ENSE'].astype(int)
@@ -293,7 +293,28 @@ df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
 df2 = df2[df2['COD_GRADO'].isin([3, 4])]
 df2['COD_GRADO'].value_counts()
 
-df2.to_csv('2017_SEP.csv', index=False)
+df2.to_csv('2017_SEP_filtrado_filtrado.csv', index=False)
+
+# Agregamos la base "Rendimiento" de 2016, para extraer el dato de promedio general anual.
+""" 2016 """
+%clear
+%reset -f
+!cls 
+import pandas as pd
+import os
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
+df1 = pd.read_csv(r'/Users/xiomarakuwae/Downloads/Proyecto AMLE/20170216_Rendimiento_2016_20170131_PUBL.csv', sep=';')
+
+df1 = df1[~df1['cod_ense'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 217, 218, 219, 299])]
+
+df1['cod_ense'].value_counts()
+
+df1['cod_ense'] = df1['cod_ense'].astype(int)
+df1 = df1[df1['cod_grado'].isin([3, 4])]
+
+df1['cod_grado'].value_counts()
+
+df1.to_csv('2016_Rendimiento_filtrado.csv', index=False)
 
 """ ######################### Cargar bases ########################## """
 %clear
@@ -303,16 +324,16 @@ import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-os.chdir(r"C:\Users\LENOVO\Documents\GitHub\Machine-Learning\Trabajo final")
+os.chdir(r'/Users/xiomarakuwae/Documents/GitHub/Machine-Learning/Trabajo final')
 
-df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020.csv')
-df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021.csv')
-df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022.csv')
-df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2023.csv') 
-df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024.csv')
-df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2019.csv')
-df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018.csv')
-df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017.csv')
+df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020_Rendimiento_filtrado.csv')
+df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021_Rendimiento_filtrado.csv')
+df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022_Rendimiento_filtrado.csv')
+df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2023_Rendimiento_filtrado.csv') 
+df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024_Rendimiento_filtrado.csv')
+df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2019_Rendimiento_filtrado.csv')
+df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018_Rendimiento_filtrado.csv')
+df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017_Rendimiento_filtrado.csv')
 
 df8.columns = df8.columns.str.upper()
 
@@ -363,14 +384,14 @@ df_p1['MRUN'] = df_p1['MRUN'].astype(int)
 
 del df1, df2 , df3, df4, df5, df6, df7, df8, duplicated_mruns
 
-df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020_SEP.csv')
-df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021_SEP.csv')
-df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022_SEP.csv')
-df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2023_SEP.csv') 
-df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024_SEP.csv')
-df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2019_SEP.csv')
-df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018_SEP.csv')
-df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017_SEP.csv')
+df1 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2020_SEP_filtrado.csv')
+df2 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2021_SEP_filtrado.csv')
+df3 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2022_SEP_filtrado.csv')
+df4 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2023_SEP_filtrado.csv') 
+df5 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2024_SEP_filtrado.csv')
+df6 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2019_SEP_filtrado.csv')
+df7 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2018_SEP_filtrado.csv')
+df8 = pd.read_csv('https://raw.githubusercontent.com/luijolo/Machine-Learning/refs/heads/main/Trabajo%20final/2017_SEP_filtrado.csv')
 
 df8.columns = df8.columns.str.upper()
 
