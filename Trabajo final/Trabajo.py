@@ -21,7 +21,7 @@ Nota:
     
 Los CSV Rendimiento 2024, Rendimiento 2023, Rendimiento 2022, 
 Rendimiento 2021, Rendimiento 2020, Rendimiento 2019, Rendimiento 2018, 
-Rendimiento 2017, PPB 2024, PPB 2023, PPB 2022, PPB 2021, PPB 2020, PPB 2019,
+Rendimiento 2017, Rendimiento 2016, PPB 2024, PPB 2023, PPB 2022, PPB 2021, PPB 2020, PPB 2019,
 PPB 2018, PPB 2017 son los archivos originales publicados por MINEDUC 
 (sacados de las carpetas zip) desde su página web 
 (https://datosabiertos.mineduc.cl/) para los años correspondientes.
@@ -418,12 +418,12 @@ df_p2= pd.concat([df1, df2, df3, df4, df5, df6, df7, df8], ignore_index=True)
 df_p2['AGNO'] = df_p2['AGNO'].astype(int)
 df_p2['MRUN'] = df_p2['MRUN'].astype(int)
 
-df_p2 = df_p2.drop(columns=['GEN_ALU', 'FEC_NAC_ALU', 'RBD', 'DGV_RBD', 'NOM_RBD'])
-df_p2 = df_p2.drop(columns=['NOM_REG_RBD_A', 'COD_REG_RBD', 'COD_PRO_RBD'])
-df_p2 = df_p2.drop(columns=['COD_COM_RBD', 'NOM_COM_RBD', 'COD_DEPROV_RBD']) 
-df_p2 = df_p2.drop(columns=['NOM_DEPROV_RBD', 'COD_DEPE', 'COD_DEPE2'])
-df_p2 = df_p2.drop(columns=['ESTADO_ESTAB', 'NOMBRE_SLEP', 'COD_ENSE', 'COD_ENSE2']) 
-df_p2 = df_p2.drop(columns=['COD_GRADO', 'LET_CUR', 'COD_JOR', 'RURAL_RBD'])
+df_p2 = df_p2.drop(columns=['GEN_ALU', 'FEC_NAC_ALU', 'RBD', 'DGV_RBD', 'NOM_RBD',
+                            'NOM_REG_RBD_A', 'COD_REG_RBD', 'COD_PRO_RBD',
+                            'COD_COM_RBD', 'NOM_COM_RBD', 'COD_DEPROV_RBD',
+                            'NOM_DEPROV_RBD', 'COD_DEPE', 'COD_DEPE2',
+                            'ESTADO_ESTAB', 'NOMBRE_SLEP', 'COD_ENSE', 'COD_ENSE2',
+                            'COD_GRADO', 'LET_CUR', 'COD_JOR', 'RURAL_RBD'])
 
 del df1, df2 , df3, df4, df5, df6, df7, df8, duplicated_mruns
 
