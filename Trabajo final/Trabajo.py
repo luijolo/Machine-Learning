@@ -462,9 +462,8 @@ df.to_csv('df_merged.csv', index=False)
 
 
 """ ################ Pre procesamiento ####################### """
-#Descripción de cada columna (tipo de dato y missings)
+# Descripción de cada columna (tipo de dato y missings)
 df.head()
-
 """
 AGNO: Año de los datos
 COD_COM_RBD: Código comuna del establecimiento
@@ -484,7 +483,8 @@ PRIORITARIO_ALU: Indicador de si alumno es prioritario (1 = si)
 PREFERENTE_ALU: Indicador de si alumno es preferente (1 = si)
 BEN_SEP: Indicador de si alumno es beneficiario de SEP (1 = si)
 """
-df.isnull().sum().sort_values(ascending=False) #Total de missings
+
+df.isnull().sum().sort_values(ascending=False) # Total de missings
 
 df['ASISTENCIA'] = pd.to_numeric(df['ASISTENCIA'], errors='coerce') #Ajustar para que todas sean numericas
 df['PROM_GRAL'] = (df['PROM_GRAL'].astype(str).str.replace(',', '.', regex=False).astype(float))
