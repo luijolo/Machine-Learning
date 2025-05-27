@@ -768,15 +768,12 @@ print(f"Comunas procesadas: {len(target_encoding)}")
 def map_cod_ense(cod_ense):
     # Mapeo basado en el sistema educativo chileno
     cientifico_humanista = [310, 363]
-    tecnico_profesional = [410, 463, 510, 563, 610, 663, 710, 763, 810, 863]
-    artistica = [910]
+    tecnico_profesional = [410, 463, 510, 563, 610, 663, 710, 763, 810, 863, 910]
 
     if cod_ense in cientifico_humanista:
         return 'Científico Humanista'
     elif cod_ense in tecnico_profesional:
         return 'Técnico Profesional'
-    elif cod_ense in artistica:
-        return 'Artística'
     else:
         return np.nan  # Para valores no mapeados
 
@@ -792,14 +789,19 @@ df = pd.get_dummies(df, columns=['TIPO_ENSENANZA'], prefix='ENSE', dtype=int)
 
 # Mostrar las primeras filas para verificar
 print(df[['MRUN', 'AGNO', 'COD_ENSE', 'PROM_GRAL', 'PROM_GRAL_ANTERIOR', 
-          'ENSE_Cientifico Humanista', 'ENSE_Tecnico Profesional', 'ENSE_Artistica']].head(10))
+          'ENSE_Científico Humanista', 'ENSE_Técnico Profesional']].head(10))
 
 # Imprimir número de filas para depuración
 print(f"Filas en df después del merge y one-hot encoding: {len(df)}")
 
 
+# Realizar one-hot encoding de COD_GRADO
+df = pd.get_dummies(df, columns=['COD_GRADO'], prefix='GRADO', dtype=int)
 
-#Balancear set de entrenamiento 
+# Mostrar las primeras filas para verificar las nuevas columnas
+print(df[['MRUN', 'AGNO', 'PROM_GRAL', 'GRADO_3', 'GRADO_4']].head(10))
+
+
 
 
 """ ##################### Modelo 1 ####################### """
