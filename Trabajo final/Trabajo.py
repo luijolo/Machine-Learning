@@ -462,60 +462,29 @@ df.to_csv('df_merged.csv', index=False)
 
 
 """ ################ Pre procesamiento ####################### """
-#Descripción de cada columna (tipo de dato y missings)
+# Descripción de cada columna (tipo de dato y missings)
 df.head()
-
 """
 AGNO: Año de los datos
-RBD: Rol del establecimiento
-DGV_RBD: Dígito verificador del establecimiento
-NOM_RBD: Nombre establecimiento
-COD_REG_RBD: Código región del establecimiento
-NOM_REG_RBD_A: Nombre región del establecimiento
-COD_PRO_RBD: Código provincia del establecimiento
 COD_COM_RBD: Código comuna del establecimiento
-NOM_COM_RBD: Nombre de la comuna
-COD_DEPROV_RBD: Código departamento provincial del establecimiento
-NOM_DEPROV_RBD: Nombre departamento provincial del establecimiento
-COD_DEPE: Dependencia
-COD_DEPE2: Dependecia recodificado
+COD_DEPE2: Dependencia recodificado
 RURAL_RBD: Área (urbana o rural)
-ESTADO_ESTAB: Estado del establecimiento
 COD_ENSE: Código de tipo de enseñanza
-COD_ENSE2: Código de tipo de enseñanza por niveles
 COD_GRADO: Código de grado
-LET_CUR: Letra del curso
-COD_JOR: Código jornada
-COD_TIP_CUR: Índice de tipo de curso
-COD_DES_CUR: Descripción de curso
 MRUN: Máscara del RUN del estudiante
-GEN_ALU: Género (1 =  masculino)
-FEC_NAC_ALU: Fecha de nacimiento
+GEN_ALU: Género (1 = masculino)
 EDAD_ALU: Edad al 30 de junio
-COD_REG_ALU: Región residencia alumno
 COD_COM_ALU: Comuna residencia alumno
-NOM_COM_ALU: Nombre comuna residencia alumno
-COD_RAMA: Código de rama del curso (TP)
-COD_SEC: Código de sector económico (TP)
-COD_ESPE: Código de especialidad (TP)
 PROM_GRAL: Promedio del año
 ASISTENCIA: Porcentaje asistencia en el año
-SIT_FIN: Situación final de promoción
 SIT_FIN_R: Situación final de promoción (con traslado)
-COD_MEN: Mención
-NOMBRE_SLEP:
-CRITERIO_SEP:
-CONVENIO_SEP: Establecimiento tiene convenio SEP (1 =  si)
-AÑO_INGRESO_SEP: Año inicio convenio SEP
-CLASIFICACION_SEP: Clasificación de convenio SEP
-EE_GRATUITO: Indicador de gratuidad de establecimiento (1 =  si)
-GRADO_SEP: Nivel de SEP
-PRIORITARIO_ALU: Indicador de si alumno es prioritario (1 =  si)
-PREFERENTE_ALU: Indicador de si alumno es preferente (1 =  si)
-BEN_SEP: Indicador de si alumno es beneficiario de SEP (1 =  si)
-FEC_DEFUN_ALU: 
+EE_GRATUITO: Indicador de gratuidad de establecimiento (1 = si)
+PRIORITARIO_ALU: Indicador de si alumno es prioritario (1 = si)
+PREFERENTE_ALU: Indicador de si alumno es preferente (1 = si)
+BEN_SEP: Indicador de si alumno es beneficiario de SEP (1 = si)
 """
-df.isnull().sum().sort_values(ascending=False) #Total de missings
+
+df.isnull().sum().sort_values(ascending=False) # Total de missings
 
 df['ASISTENCIA'] = pd.to_numeric(df['ASISTENCIA'], errors='coerce') #Ajustar para que todas sean numericas
 df['PROM_GRAL'] = (df['PROM_GRAL'].astype(str).str.replace(',', '.', regex=False).astype(float))
