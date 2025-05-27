@@ -467,53 +467,22 @@ df.head()
 
 """
 AGNO: Año de los datos
-RBD: Rol del establecimiento
-DGV_RBD: Dígito verificador del establecimiento
-NOM_RBD: Nombre establecimiento
-COD_REG_RBD: Código región del establecimiento
-NOM_REG_RBD_A: Nombre región del establecimiento
-COD_PRO_RBD: Código provincia del establecimiento
 COD_COM_RBD: Código comuna del establecimiento
-NOM_COM_RBD: Nombre de la comuna
-COD_DEPROV_RBD: Código departamento provincial del establecimiento
-NOM_DEPROV_RBD: Nombre departamento provincial del establecimiento
-COD_DEPE: Dependencia
-COD_DEPE2: Dependecia recodificado
+COD_DEPE2: Dependencia recodificado
 RURAL_RBD: Área (urbana o rural)
-ESTADO_ESTAB: Estado del establecimiento
 COD_ENSE: Código de tipo de enseñanza
-COD_ENSE2: Código de tipo de enseñanza por niveles
 COD_GRADO: Código de grado
-LET_CUR: Letra del curso
-COD_JOR: Código jornada
-COD_TIP_CUR: Índice de tipo de curso
-COD_DES_CUR: Descripción de curso
 MRUN: Máscara del RUN del estudiante
-GEN_ALU: Género (1 =  masculino)
-FEC_NAC_ALU: Fecha de nacimiento
+GEN_ALU: Género (1 = masculino)
 EDAD_ALU: Edad al 30 de junio
-COD_REG_ALU: Región residencia alumno
 COD_COM_ALU: Comuna residencia alumno
-NOM_COM_ALU: Nombre comuna residencia alumno
-COD_RAMA: Código de rama del curso (TP)
-COD_SEC: Código de sector económico (TP)
-COD_ESPE: Código de especialidad (TP)
 PROM_GRAL: Promedio del año
 ASISTENCIA: Porcentaje asistencia en el año
-SIT_FIN: Situación final de promoción
 SIT_FIN_R: Situación final de promoción (con traslado)
-COD_MEN: Mención
-NOMBRE_SLEP:
-CRITERIO_SEP:
-CONVENIO_SEP: Establecimiento tiene convenio SEP (1 =  si)
-AÑO_INGRESO_SEP: Año inicio convenio SEP
-CLASIFICACION_SEP: Clasificación de convenio SEP
-EE_GRATUITO: Indicador de gratuidad de establecimiento (1 =  si)
-GRADO_SEP: Nivel de SEP
-PRIORITARIO_ALU: Indicador de si alumno es prioritario (1 =  si)
-PREFERENTE_ALU: Indicador de si alumno es preferente (1 =  si)
-BEN_SEP: Indicador de si alumno es beneficiario de SEP (1 =  si)
-FEC_DEFUN_ALU: 
+EE_GRATUITO: Indicador de gratuidad de establecimiento (1 = si)
+PRIORITARIO_ALU: Indicador de si alumno es prioritario (1 = si)
+PREFERENTE_ALU: Indicador de si alumno es preferente (1 = si)
+BEN_SEP: Indicador de si alumno es beneficiario de SEP (1 = si)
 """
 df.isnull().sum().sort_values(ascending=False) #Total de missings
 
@@ -530,15 +499,15 @@ df = df[df['COD_DEPE2'] != 3] #Dropear particulares pagados porque no estan obli
 
 """ ################ Análisis exploratorio de datos ####################### """
 #Outliers
-df['X_bin'] = pd.qcut(df['PROM_GRAL'], q=20, duplicates='drop')  # 20 quantile bins
+df['X_bin'] = pd.qcut(df['PROM_GRAL_ANTERIOR'], q=20, duplicates='drop')  # 20 quantile bins
 
-binned = df.groupby('X_bin', observed=True).agg({'PROM_GRAL': 'mean','ASISTENCIA': 'mean'}).reset_index()
+binned = df.groupby('X_bin', observed=True).agg({'PROM_GRAL_ANTERIOR': 'mean','ASISTENCIA': 'mean'}).reset_index()
 
 plt.figure(figsize=(8,6))
-sns.scatterplot(data=binned, x='PROM_GRAL', y='ASISTENCIA')  # Use numeric PROM_GRAL
-plt.xlabel('PROM_GRAL (Binned Means)')
+sns.scatterplot(data=binned, x='PROM_GRAL_ANTERIOR', y='ASISTENCIA')  # Use numeric PROM_GRAL
+plt.xlabel('PROM_GRAL_ANTERIOR (Binned Means)')
 plt.ylabel('ASISTENCIA (Mean)')
-plt.title('Binscatter: ASISTENCIA vs PROM_GRAL')
+plt.title('Binscatter: ASISTENCIA vs PROM_GRAL_ANTERIOR')
 plt.tight_layout()
 plt.show()
 
@@ -555,7 +524,7 @@ plt.tight_layout()
 plt.show()
 
 #Distribución de variables numericas
-variables = ['ASISTENCIA', 'PROM_GRAL', 'EDAD_ALU']
+variables = ['ASISTENCIA', 'PROM_GRAL_ANTERIOR', 'EDAD_ALU']
 
 plt.figure(figsize=(15, 4))
 
@@ -570,7 +539,7 @@ plt.tight_layout()
 plt.show()
 
 #Correlaciones y distribuciones por clase
-numericos = df[['ASISTENCIA', 'PROM_GRAL', 'EDAD_ALU']]
+numericos = df[['ASISTENCIA', 'PROM_GRAL_ANTERIOR', 'EDAD_ALU']]
 
 corr = numericos.corr()
 plt.figure(figsize=(10, 8))
@@ -659,7 +628,7 @@ variables_categoricas = ['COD_COM_RBD', 'COD_DEPE2', 'COD_ENSE', 'COD_GRADO', 'C
 variables_binarias = ['RURAL_RBD', 'GEN_ALU', 'EE_GRATUITO', 'PRIORITARIO_ALU', 'PREFERENTE_ALU', 'BEN_SEP', 'DESERTAR']
 variables_identificadores = ['MRUN']
 variables_temporales = ['AGNO']
-variables_continuas = ['EDAD_ALU', 'PROM_GRAL', 'ASISTENCIA']
+variables_continuas = ['EDAD_ALU', 'PROM_GRAL_ANTERIOR', 'ASISTENCIA']
 
 # Para nuestras variables categóricas, códigos identificadores y binarias no requieren 
 # tratamiento de outliers porque sus valores extremos son normales y esperados.
@@ -674,7 +643,7 @@ for var in variables_continuas:
             print(f"  Edades < 12: {len(df[df[var] < 12])}")
             print(f"  Edades > 25: {len(df[df[var] > 25])}")
             
-        elif var == 'PROM_GRAL':
+        elif var == 'PROM_GRAL_ANTERIOR':
             print(f"  Rango: {df[var].min()}-{df[var].max()}")
             print(f"  Notas = 0: {len(df[df[var] == 0])}")
             print(f"  Notas > 7: {len(df[df[var] > 7])}")
@@ -685,7 +654,7 @@ for var in variables_continuas:
             print(f"  Valores > 100: {len(df[df[var] > 100])}")
 
 # Se mantendra sin cambios a ASISTENCIA (rango 0-100% es normal) y 
-# a PROM_GRAL (0=retirado, 1-7=escala de notas) 
+# a PROM_GRAL_ANTERIOR (0=retirado, 1-7=escala de notas) 
 
 # TRATAMIENTO DE OUTLIERS 
 
