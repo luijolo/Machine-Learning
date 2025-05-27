@@ -433,7 +433,33 @@ print(f"Observaciones después del merge: {len(df):,}") # 2,486,512 obs
 
 del df_p1, df_p2
 
+# Información detallada sobre cada variable obtenida
+print(f"\nInformación detallada del dataset:")
+df.info()
+
+
+# Variables a eliminar (lista completa y corregida)
+variables_eliminar = [
+    'RBD', 'DGV_RBD', 'NOM_RBD', 'COD_REG_RBD', 'NOM_REG_RBD_A',
+    'COD_PRO_RBD', 'NOM_COM_RBD', 'COD_DEPROV_RBD', 'NOM_DEPROV_RBD',
+    'COD_DEPE', 'ESTADO_ESTAB', 'COD_ENSE2', 'LET_CUR', 'COD_JOR',
+    'COD_TIP_CUR', 'COD_DES_CUR', 'FEC_NAC_ALU', 'COD_REG_ALU',
+    'NOM_COM_ALU', 'COD_RAMA', 'COD_SEC', 'SIT_FIN', 'COD_ESPE',
+    'COD_MEN', 'NOMBRE_SLEP', 'CRITERIO_SEP', 'CONVENIO_SEP',
+    'AÑO_INGRESO_SEP', 'CLASIFICACION_SEP', 'COD_ENSE3', 'COD_GRADO2',
+    'GRADO_SEP', 'FEC_DEFUN_ALU'
+]
+
+# Eliminar las variables que existen
+variables_existentes = [var for var in variables_eliminar if var in df.columns]
+df = df.drop(columns=variables_existentes)
+
+# Información detallada sobre cada variable obtenida
+print(f"\nInformación detallada del dataset:")
+df.info()
+
 df.to_csv('df_merged.csv', index=False)
+
 
 """ ################ Pre procesamiento ####################### """
 #Descripción de cada columna (tipo de dato y missings)
@@ -583,16 +609,190 @@ for i, var in enumerate(categorias):
 plt.tight_layout()
 plt.show()
 
+# Boxplot de edad
+plt.figure(figsize=(8, 6))
+sns.boxplot(data=df, y='EDAD_ALU')
+plt.title('Boxplot de Edad de los Alumnos')
+plt.ylabel('Edad (años)')
+plt.grid(True, alpha=0.3)
+plt.show()
+
+
+# GUARDANDO LO CORRIDO 
+# df.to_csv("1era_parte.csv", index=False)
+
+
+
+""" ################ Decisiones de imputación de missings y depuración de outliers ####################### """
+
+# PARA RECUPERAR LO YA CORRIDO
+# import pandas as pd
+# df = pd.read_csv("1era_parte.csv")
+
+
+# A. VERIFICANDO MISSING VALUES POR VARIABLE
+missing_analysis = df.isnull().sum()
+missing_percentage = (df.isnull().sum() / len(df)) * 100
+
+missing_df = pd.DataFrame({
+    'Variable': missing_analysis.index,
+    'Missing_Count': missing_analysis.values,
+    'Missing_Percentage': missing_percentage.values
+})
+
+# Mostrar solo variables con missings
+variables_con_missing = missing_df[missing_df['Missing_Count'] > 0].sort_values('Missing_Count', ascending=False)
+print(variables_con_missing)
+
+
+# TRATAMIENTO DE MISSING VALUES
+# Al ser pocos decidimos eliminar los missing
+
+# Eliminando filas con missing en EDAD_ALU
+df = df.dropna(subset=['EDAD_ALU'])
+# Eliminando filas con missing en A_bin
+df = df.dropna(subset=['A_bin'])
+
+
+# B.VERIFICANDO OUTLIERS POR VARIABLE 
+variables_categoricas = ['COD_COM_RBD', 'COD_DEPE2', 'COD_ENSE', 'COD_GRADO', 'COD_COM_ALU']
+variables_binarias = ['RURAL_RBD', 'GEN_ALU', 'EE_GRATUITO', 'PRIORITARIO_ALU', 'PREFERENTE_ALU', 'BEN_SEP', 'DESERTAR']
+variables_identificadores = ['MRUN']
+variables_temporales = ['AGNO']
+variables_continuas = ['EDAD_ALU', 'PROM_GRAL', 'ASISTENCIA']
+
+# Para nuestras variables categóricas, códigos identificadores y binarias no requieren 
+# tratamiento de outliers porque sus valores extremos son normales y esperados.
+
+# Revisando variables continuas
+for var in variables_continuas:
+    if var in df.columns:
+        print(f"\n{var}:")
+        
+        if var == 'EDAD_ALU':
+            print(f"  Rango: {df[var].min()}-{df[var].max()} años")
+            print(f"  Edades < 12: {len(df[df[var] < 12])}")
+            print(f"  Edades > 25: {len(df[df[var] > 25])}")
+            
+        elif var == 'PROM_GRAL':
+            print(f"  Rango: {df[var].min()}-{df[var].max()}")
+            print(f"  Notas = 0: {len(df[df[var] == 0])}")
+            print(f"  Notas > 7: {len(df[df[var] > 7])}")
+            
+        elif var == 'ASISTENCIA':
+            print(f"  Rango: {df[var].min()}-{df[var].max()}%")
+            print(f"  Valores < 0: {len(df[df[var] < 0])}")
+            print(f"  Valores > 100: {len(df[df[var] > 100])}")
+
+# Se mantendra sin cambios a ASISTENCIA (rango 0-100% es normal) y 
+# a PROM_GRAL (0=retirado, 1-7=escala de notas) 
+
+# TRATAMIENTO DE OUTLIERS 
+
+# Para EDAD_ALU se elimina menores de 12 años
+df = df[df['EDAD_ALU'] >= 12]  # Se elimino a 2 estudiantes
 
 
 """ ################ Feature Engineering ####################### """
-#Imputar outliers
+# LIMPIEZA Y TRANSFORMACIONES NECESARIAS (no por missing, ni outlayer)
+
+# Limpieza de la variable GEN_ALU
+# Mostrando distribucion actual
+df['GEN_ALU'].value_counts().sort_index()
+# Eliminar observaciones con GEN_ALU = 0
+filas_antes = len(df)
+df = df[df['GEN_ALU'] != 0]
+filas_despues = len(df)
+print(f"Eliminadas {filas_antes - filas_despues} observaciones con genero indeterminado")
 
 
-#Estandarizar/Normalizar variables
+# CREACION DE NUEVAS VARIABLES 
+
+# Creando variables de sobredad
+# a. Sobredad binaria (19-20 años)
+df['SOBREDAD'] = ((df['EDAD_ALU'] >= 19) & (df['EDAD_ALU'] <= 20)).astype(int)
+sobredad_count = df['SOBREDAD'].sum()
+
+# b. Sobredad severa (21+ años)
+df['SOBREDAD_SEVERA'] = (df['EDAD_ALU'] >= 21).astype(int)
+sobredad_severa_count = df['SOBREDAD_SEVERA'].sum()
+
+# Nuestra distribucion final de edades es:
+print(f"\nDISTRIBUCION FINAL DE EDADES:")
+print(f"   12-18 años (edad normal): {len(df[(df['EDAD_ALU'] >= 12) & (df['EDAD_ALU'] <= 18)]):,}")
+print(f"   19-20 años (sobredad): {sobredad_count:,}")
+print(f"   21+ años (sobredad severa): {sobredad_severa_count:,}")
 
 
-#Reeemplazar variables string por númericas (one hot encoding)
+# Creando variable dummy: 1 = Mujer, 0 = Varon
+df['MUJER'] = (df['GEN_ALU'] == 1).astype(int)
+
+# Creando variable dummy: 1 si alumno estudia en misma comuna que reside, 0 si no
+df['MISMA_COMUNA'] = (df['COD_COM_RBD'] == df['COD_COM_ALU']).astype(int)
+
+# Creando dummy pandemia: 1 si fue 2020 o 2021, 0 si no
+df['DUMMY_PANDEMIA'] = ((df['AGNO'] == 2020) | (df['AGNO'] == 2021)).astype(int)
+
+# Creando dummy estallido: 1 si fue 2019, 0 si no
+df['DUMMY_ESTALLIDO'] = (df['AGNO'] == 2019).astype(int)
+
+
+
+
+# ONE-HOT ENCODING PARA COD_DEPE2
+
+# Verificando la distribución actual
+print(df['COD_DEPE2'].value_counts().sort_index())
+
+# Creando las dummies usando pandas get_dummies
+dependencia_dummies = pd.get_dummies(df['COD_DEPE2'], prefix='DEPE')
+
+# Nuevas variables creadas
+print(f"\nVariables dummy creadas:")
+for col in dependencia_dummies.columns:
+   print(f"  {col}")
+
+# Agregando las dummies al dataset principal
+df = pd.concat([df, dependencia_dummies], axis=1)
+
+# Verificando
+print(f"\nVerificacion de creacion:")
+for col in dependencia_dummies.columns:
+   count_ones = df[col].sum()
+   print(f"  {col}: {count_ones:,} casos con valor 1")
+
+
+
+# TARGET ENCODING PARA COD_COM_RBD
+
+# Viendo cuantas comunas diferentes existen
+n_comunas = df['COD_COM_RBD'].nunique()
+print(f"Numero de comunas diferentes: {n_comunas:,}")
+
+# Calculando target encoding
+target_encoding = df.groupby('COD_COM_RBD')[target_var].agg(['mean', 'count']).reset_index()
+target_encoding.columns = ['COD_COM_RBD', 'COMUNA_TARGET_RATE', 'COMUNA_COUNT']
+
+# Aplicando suavizado (smoothing) para comunas con pocos casos
+# Formula: (count * target_rate + alpha * global_rate) / (count + alpha)
+global_rate = df[target_var].mean()
+alpha = 10  # Factor de suavizado
+
+target_encoding['COMUNA_TARGET_SMOOTH'] = (
+   (target_encoding['COMUNA_COUNT'] * target_encoding['COMUNA_TARGET_RATE'] + 
+    alpha * global_rate) / 
+   (target_encoding['COMUNA_COUNT'] + alpha)
+)
+
+# Haciendo merge con el dataset principal
+df = df.merge(target_encoding[['COD_COM_RBD', 'COMUNA_TARGET_SMOOTH']], 
+             on='COD_COM_RBD', how='left')
+
+# Verificar resultados
+print(f"Variable creada: COMUNA_TARGET_SMOOTH")
+print(f"Rango de valores: {df['COMUNA_TARGET_SMOOTH'].min():.4f} - {df['COMUNA_TARGET_SMOOTH'].max():.4f}")
+print(f"Promedio global: {global_rate:.4f}")
+print(f"Comunas procesadas: {len(target_encoding)}")
 
 
 # Bucketización de COD_ENSE en tres categorías
