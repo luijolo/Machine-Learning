@@ -734,6 +734,9 @@ for col in dependencia_dummies.columns:
 
 # TARGET ENCODING PARA COD_COM_RBD
 
+# Variable objetivo 
+target_var = 'DESERTAR'
+
 # Viendo cuantas comunas diferentes existen
 n_comunas = df['COD_COM_RBD'].nunique()
 print(f"Numero de comunas diferentes: {n_comunas:,}")
