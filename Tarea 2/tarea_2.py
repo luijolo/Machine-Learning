@@ -173,11 +173,27 @@ Impute los valores nulos con el método que estime conveniente, justificando su 
 # Total de missings
 df_consolidado.isnull().sum().sort_values(ascending=False) 
 
+# Completar missings de poutcome
+df_consolidado['contact'].describe()
+df_consolidado['contact'].unique()
+
+#Reemplazamos por la moda
+moda_contact = df_consolidado['contact'].mode()[0]
+df_consolidado['contact'] = df_consolidado['contact'].fillna(moda_contact)
+
+# Completar missings de contact
+
+# Completar missings de education
+
+# Completar missings de job
+
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+*Para el caso de poutcome se optó por dropear la variable directamente por la gran cantidad de missings
+*Para contact se optó por 
+*
 
 
 ---
