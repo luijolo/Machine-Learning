@@ -121,7 +121,7 @@ En el sitio web [https://archive.ics.uci.edu/dataset/222/bank+marketing](https:/
 Use el código otorgado a continuación para importar los datos.
 """
 
-pip install ucimlrepo
+!pip install ucimlrepo
 
 from ucimlrepo import fetch_ucirepo
 
@@ -160,7 +160,7 @@ print(df_consolidado.dtypes)
 print("\nEstadísticas descriptivas para variables numéricas:")
 print(df_consolidado.select_dtypes(include=['int64', 'float64']).describe())
 
-# Estadísticas para variables categóricas (si las hay)
+# 5. Estadísticas para variables categóricas (si las hay)
 print("\nEstadísticas descriptivas para variables categóricas:")
 print(df_consolidado.select_dtypes(include=['object', 'category']).describe())
 
