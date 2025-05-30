@@ -165,14 +165,14 @@ print("\nEstadísticas descriptivas para variables categóricas:")
 print(df_consolidado.select_dtypes(include=['object', 'category']).describe())
 
 
-
 """### Pregunta 1.1
 
 Identifique las columnas que presentan _missing values_ e indique el número de _missing values_ que poseen.
 
 Impute los valores nulos con el método que estime conveniente, justificando su decisión.
 """
-
+# Total de missings
+df.isnull().sum().sort_values(ascending=False) 
 
 
 """---
