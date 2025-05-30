@@ -120,8 +120,7 @@ En el sitio web [https://archive.ics.uci.edu/dataset/222/bank+marketing](https:/
 
 Use el código otorgado a continuación para importar los datos.
 """
-
-pip install ucimlrepo
+!pip install ucimlrepo
 
 from ucimlrepo import fetch_ucirepo
 
@@ -172,7 +171,7 @@ Identifique las columnas que presentan _missing values_ e indique el número de 
 Impute los valores nulos con el método que estime conveniente, justificando su decisión.
 """
 # Total de missings
-df.isnull().sum().sort_values(ascending=False) 
+df_consolidado.isnull().sum().sort_values(ascending=False) 
 
 
 """---
