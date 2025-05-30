@@ -30,9 +30,9 @@ Ayudantes:
 **Complete sus datos:**
 
 - Nombre y apellido:
-  - `# Completar`
-  - `# Completar`
-- Usuario de GitHub (opcional):  `# Completar`
+  - `# Xiomara Kuwae`
+  - `# Luis José López`
+- Usuario de GitHub (opcional):  `# https://github.com/luijolo/Machine-Learning/tree/main/Tarea%202`
 
 ## Instrucciones
 
