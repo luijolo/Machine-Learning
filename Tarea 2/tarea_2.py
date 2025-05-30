@@ -404,8 +404,18 @@ En caso de que el conjunto de datos no esté balanceado, asegúrese de que la di
 
 Use la semilla `random_state` = 123.
 """
+# Dividir en conjuntos de entrenamiento y prueba, respetando el balance de clases
+X_train, X_test, y_train, y_test = train_test_split(X_processed, y_encoded, test_size=0.2, random_state=123, stratify=y_encoded)
 
+# Analizar la distribución de la variable objetivo en ambos conjuntos
+print("Distribución en el conjunto de entrenamiento (y_train):")
+print(pd.Series(y_train).value_counts(normalize=True))
+print("\nDistribución en el conjunto de prueba (y_test):")
+print(pd.Series(y_test).value_counts(normalize=True))
 
+# Verificar las formas de los conjuntos
+print("\nForma de X_train:", X_train.shape)
+print("Forma de X_test:", X_test.shape)
 
 
 """### Pregunta 1.6
