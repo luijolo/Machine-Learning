@@ -340,6 +340,7 @@ Use la semilla `random_state` = 123.
 
 
 
+
 """### Pregunta 1.6
 
 Entrene un árbol clasificador sin definir profundad máxima del árbol. Llamaremos a este, "modelo no regularizado".
