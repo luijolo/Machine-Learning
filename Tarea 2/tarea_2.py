@@ -319,6 +319,73 @@ Una vez creado el pipeline, aplíquelo a su conjunto de features (`X`). Muestre 
 Adicionalmente, elimine del análisis la variable `day_of_week`. Si considera necesario realizar transformaciones adicionales a las variables, realicelas en este punto.
 """
 
+import numpy as np
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, MinMaxScaler
+from sklearn.pipeline import Pipeline
+from sklearn.base import BaseEstimator, TransformerMixin
+
+# Transformador personalizado para aplicar LabelEncoder a múltiples columnas
+class MultiColumnLabelEncoder(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        self.encoders = {}
+
+    def fit(self, X, y=None):
+        for column in X.columns:
+            le = LabelEncoder()
+            le.fit(X[column])
+            self.encoders[column] = le
+        return self
+
+    def transform(self, X):
+        X_transformed = X.copy()
+        for column, le in self.encoders.items():
+            X_transformed[column] = le.transform(X[column])
+        return X_transformed
+
+# Definir columnas
+numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous']
+categoricas_no_binarias = ['job', 'marital', 'contact', 'poutcome']
+dummies_multinivel = ['default', 'housing', 'loan']
+label_ordinal = ['month', 'education']  # month y education con su orden natural
+columnas_a_eliminar = ['day_of_week'] + numericas + categoricas_no_binarias
+
+# Crear DataFrame de features (X) excluyendo 'y' como variable objetivo
+X = df_consolidado.drop(columns=['y'])
+
+# Definir transformaciones
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numericas),
+        ('cat', OneHotEncoder(drop='first', handle_unknown='ignore', sparse_output=False), categoricas_no_binarias),
+        ('dummies', OneHotEncoder(drop='first', sparse_output=False), dummies_multinivel),
+        ('ordinal', Pipeline([
+            ('label', MultiColumnLabelEncoder()),
+            ('scale', MinMaxScaler())
+        ]), label_ordinal)
+    ],
+    remainder='passthrough'  # Mantener otras columnas no transformadas
+)
+
+# Crear y aplicar el pipeline
+pipeline = Pipeline([
+    ('preprocessor', preprocessor)
+])
+
+# Aplicar el pipeline a X
+X_processed = pipeline.fit_transform(X)
+
+# Verificar formas
+print("Forma del dataset original:", X.shape)
+print("Forma del dataset procesado:", X_processed.shape)
+
+# Calcular número de nuevas columnas
+original_cols = len(X.columns)
+processed_cols = X_processed.shape[1]
+new_cols = processed_cols - original_cols
+print(f"Número de nuevas columnas: {new_cols}")
+
+=======
 
 """## Modelos
 
