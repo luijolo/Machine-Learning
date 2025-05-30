@@ -318,19 +318,8 @@ Una vez creado el pipeline, aplíquelo a su conjunto de features (`X`). Muestre 
 
 Adicionalmente, elimine del análisis la variable `day_of_week`. Si considera necesario realizar transformaciones adicionales a las variables, realicelas en este punto.
 """
-# Estandarizar variables numericas
-numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous'] 
 
-# One Hot Encoding en categoricas
-categoricas = ['job', 'marital', 'education', 'contact', 'poutcome']
 
-# Eliminar columnas viejas
-df_consolidado = df_consolidado.drop('age', 'balance', 'duration', 'campaign', 'pdays', 'previous', 'job', 'marital', 'education', 'contact', 'poutcome', axis=1)
-
-# Dummies multinivel
-dummies = ['default', 'housing', 'loan', 'y']
-
-# Label Encoding multinivel
 
 """## Modelos
 
