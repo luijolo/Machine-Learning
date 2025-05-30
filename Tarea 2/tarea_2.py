@@ -258,10 +258,40 @@ Por último, variables como “marital”, “contact” y “default” parecen
 
 Identifique _outliers_ entre las variables numéricas del dataset. Además, impute estas observaciones si usted lo considera necesario. Justifique su decisión.
 """
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous']  
+
+# Vemos primero las distribuciones de las variables
+fig, axes = plt.subplots(2, 3, figsize=(15, 8))  # 2 rows, 3 columns
+axes = axes.flatten()
+
+for i, var in enumerate(numericas):
+    axes[i].hist(df_consolidado[var].dropna(), bins=30, edgecolor='black')  # dropna to avoid issues
+    axes[i].set_title(f'Distribución de {var}')
+    axes[i].set_xlabel(var)
+    axes[i].set_ylabel('Frecuencia')
+
+plt.tight_layout()
+plt.show()
+
+# Boxplot para ver outliers
+fig, axes = plt.subplots(2, 3, figsize=(16, 8))  # 2 rows, 4 columns
+axes = axes.flatten()  # flatten 2D array of axes into 1D list
+
+for i, var in enumerate(numericas):
+    sns.boxplot(y=df_consolidado[var], ax=axes[i])
+    axes[i].set_title(var)
+
+plt.tight_layout()
+plt.show()
+
 print(f"  Duración > 3,600: {len(df_consolidado[df_consolidado['duration'] > 3000])}")
 print(f"  Contacto previo > 100: {len(df_consolidado[df_consolidado['previous'] > 100])}")
 
 df_consolidado = df_consolidado[df_consolidado['previous'] <= 99]
+
 
 """---
 
