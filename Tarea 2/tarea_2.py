@@ -174,14 +174,16 @@ Impute los valores nulos con el método que estime conveniente, justificando su 
 df_consolidado.isnull().sum().sort_values(ascending=False) 
 
 # Completar missings de poutcome
+df_consolidado['poutcome'].unique()
+df_consolidado['poutcome'] = df_consolidado['poutcome'].fillna('unknown')
+
+# Completar missings de contact
 df_consolidado['contact'].describe()
 df_consolidado['contact'].unique()
 
 #Reemplazamos por la moda
 moda_contact = df_consolidado['contact'].mode()[0]
 df_consolidado['contact'] = df_consolidado['contact'].fillna(moda_contact)
-
-# Completar missings de contact
 
 # Completar missings de education
 
@@ -191,8 +193,8 @@ df_consolidado['contact'] = df_consolidado['contact'].fillna(moda_contact)
 """---
 
 
-*Para el caso de poutcome se optó por dropear la variable directamente por la gran cantidad de missings
-*Para contact se optó por 
+*Para el caso de poutcome se optó crear una categoría de unknowm para mantener la columna 
+*Para contact se optó por reemplazar por la moda porque generaría el menor impacto sobre la variable que tiene solo 2 categorías.
 *
 
 
