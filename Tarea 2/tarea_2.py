@@ -387,7 +387,6 @@ print(f"Número de nuevas columnas: {new_cols}")
 
 =======
 
-
 """## Modelos
 
 En esta sección aplicaremos los algoritmos de clasificación vistos en el curso. Específicamente, compararemos el rendimiento de los siguientes modelos:
