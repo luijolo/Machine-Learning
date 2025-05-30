@@ -407,7 +407,6 @@ print(f"Número de nuevas columnas: {new_cols}")
 
 =======
 
-
 """## Modelos
 
 En esta sección aplicaremos los algoritmos de clasificación vistos en el curso. Específicamente, compararemos el rendimiento de los siguientes modelos:
@@ -440,6 +439,7 @@ print(pd.Series(y_test).value_counts(normalize=True))
 # Verificar las formas de los conjuntos
 print("\nForma de X_train:", X_train.shape)
 print("Forma de X_test:", X_test.shape)
+
 
 
 """### Pregunta 1.6
