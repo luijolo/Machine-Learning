@@ -227,17 +227,24 @@ Identifique _outliers_ entre las variables numéricas del dataset. Además, impu
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-fig, axes = plt.subplots(2, 3, figsize=(16, 8))
-
 numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous']  
 
-fig, axes = plt.subplots(2, 4, figsize=(16, 8))  # 2 rows, 4 columns
+fig, axes = plt.subplots(2, 3, figsize=(16, 8))  # 2 rows, 4 columns
 axes = axes.flatten()  # flatten 2D array of axes into 1D list
 
 for i, var in enumerate(numericas):
     sns.boxplot(y=df_consolidado[var], ax=axes[i])
     axes[i].set_title(var)
 
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(8, 6))
+plt.scatter(df['X_VARIABLE'], df['Y_VARIABLE'], alpha=0.6)
+plt.xlabel('X Variable')
+plt.ylabel('Y Variable')
+plt.title('Scatter Plot')
+plt.grid(True)
 plt.tight_layout()
 plt.show()
 
