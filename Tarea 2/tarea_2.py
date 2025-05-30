@@ -258,13 +258,15 @@ Por último, variables como “marital”, “contact” y “default” parecen
 
 Identifique _outliers_ entre las variables numéricas del dataset. Además, impute estas observaciones si usted lo considera necesario. Justifique su decisión.
 """
+print(f"  Duración > 3,600: {len(df_consolidado[df_consolidado['duration'] > 3000])}")
+print(f"  Contacto previo > 100: {len(df_consolidado[df_consolidado['previous'] > 100])}")
 
-
+df_consolidado = df_consolidado[df_consolidado['previous'] <= 99]
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+* Se eliminaron las personas contactadas 100 veces o más previamente (1). Se optó por no editar la variable duration dado que no se utilizará en el modelo final, sino solo como benchmark según lo recomendado.
 
 
 ---
@@ -286,8 +288,19 @@ Una vez creado el pipeline, aplíquelo a su conjunto de features (`X`). Muestre 
 
 Adicionalmente, elimine del análisis la variable `day_of_week`. Si considera necesario realizar transformaciones adicionales a las variables, realicelas en este punto.
 """
+# Estandarizar variables numericas
+numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous'] 
 
+# One Hot Encoding en categoricas
+categoricas = ['job', 'marital', 'education', 'contact', 'poutcome']
 
+# Eliminar columnas viejas
+df_consolidado = df_consolidado.drop('age', 'balance', 'duration', 'campaign', 'pdays', 'previous', 'job', 'marital', 'education', 'contact', 'poutcome', axis=1)
+
+# Dummies multinivel
+dummies = ['default', 'housing', 'loan', 'y']
+
+# Label Encoding multinivel
 
 """## Modelos
 
