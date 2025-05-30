@@ -319,6 +319,7 @@ Una vez creado el pipeline, aplíquelo a su conjunto de features (`X`). Muestre 
 Adicionalmente, elimine del análisis la variable `day_of_week`. Si considera necesario realizar transformaciones adicionales a las variables, realicelas en este punto.
 """
 
+<<<<<<< HEAD
 import numpy as np
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, MinMaxScaler
@@ -385,6 +386,9 @@ processed_cols = X_processed.shape[1]
 new_cols = processed_cols - original_cols
 print(f"Número de nuevas columnas: {new_cols}")
 
+=======
+
+>>>>>>> 3cd62639782464cafefeedfaf69af8fd4a3f7c3d
 
 """## Modelos
 
