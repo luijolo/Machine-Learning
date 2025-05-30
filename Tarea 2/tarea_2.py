@@ -224,7 +224,22 @@ Responda: ¿Cuáles creen que son las variables categóricas más relevantes a l
 
 Identifique _outliers_ entre las variables numéricas del dataset. Además, impute estas observaciones si usted lo considera necesario. Justifique su decisión.
 """
+import seaborn as sns
+import matplotlib.pyplot as plt
 
+fig, axes = plt.subplots(2, 3, figsize=(16, 8))
+
+numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous']  
+
+fig, axes = plt.subplots(2, 4, figsize=(16, 8))  # 2 rows, 4 columns
+axes = axes.flatten()  # flatten 2D array of axes into 1D list
+
+for i, var in enumerate(numericas):
+    sns.boxplot(y=df_consolidado[var], ax=axes[i])
+    axes[i].set_title(var)
+
+plt.tight_layout()
+plt.show()
 
 
 """---
