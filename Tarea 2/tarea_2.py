@@ -261,7 +261,7 @@ df_consolidado = df_consolidado[df_consolidado['previous'] <= 99]
 """---
 
 
-*Se eliminaron las personas contactadas 100 veces o más previamente (1). Se optó por no editar la variable duration dadoq que no se utilizará en el modelo final, sino solo como benchmark según lo recomendado.
+* Se eliminaron las personas contactadas 100 veces o más previamente (1). Se optó por no editar la variable duration dadoq que no se utilizará en el modelo final, sino solo como benchmark según lo recomendado.
 
 
 ---
