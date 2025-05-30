@@ -170,6 +170,7 @@ Identifique las columnas que presentan _missing values_ e indique el número de 
 
 Impute los valores nulos con el método que estime conveniente, justificando su decisión.
 """
+
 # 1. Identificar columnas con valores nulos (ya proporcionado, pero verificamos)
 print("Columnas con valores nulos y su cantidad:")
 missing_values = df_consolidado.isnull().sum()
@@ -192,12 +193,12 @@ for column in missing_values.index:
 print("\nValores nulos después de la imputación:")
 print(df_consolidado.isnull().sum())
 
-
 """---
 
 
-*Para el caso de poutcome se optó crear una categoría de unknowm para mantener la columna y los datos que aportan sus otras categorías.
-*Para contact, job y education se optó por reemplazar por la moda porque generaría el menor impacto sobre la distribución de las variables.
+*Para el caso de poutcome se optó crear una categoría de unknowm para mantener la columna 
+*Para contact se optó por reemplazar por la moda porque generaría el menor impacto sobre la variable que tiene solo 2 categorías.
+*
 
 
 ---
@@ -210,13 +211,46 @@ Genere histogramas de las variables categóricas desagregando por la variable ob
 Responda: ¿Cuáles creen que son las variables categóricas más relevantes a la hora de determinar si el individuo hará un depósito?
 """
 
+import matplotlib.pyplot as plt
+import seaborn as sns
 
+# Lista de variables categóricas
+categorical_vars = ['job', 'marital', 'education', 'default', 'housing', 'loan', 'contact', 'month', 'poutcome']
 
+# Configurar el estilo de los gráficos
+sns.set(style="whitegrid")
+
+# Crear una figura con subplots en una cuadrícula de 3x3
+fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(20, 15))
+
+# Aplanar el array de ejes para facilitar la iteración
+axes = axes.flatten()
+
+# Generar histogramas para cada variable categórica
+for i, var in enumerate(categorical_vars):
+    sns.countplot(data=df_consolidado, x=var, hue='y', palette='Set2', ax=axes[i])
+    axes[i].set_title(f'Distribución de {var} por Suscripción')
+    axes[i].set_xlabel(var)
+    axes[i].set_ylabel('Frecuencia')
+    axes[i].tick_params(axis='x', rotation=45)
+    axes[i].legend(title='Suscripción (y)', labels=['No', 'Sí'])
+
+# Ajustar el diseño para evitar solapamiento
+plt.tight_layout()
+
+# Mostrar la figura
+plt.show()
 """---
 
 
-*Escriba* su respuesta en esta celda...
 
+Al analizar los histogramas, y de manera intuitiva, se puede concluir que poutcome es la variable más influyente, ya que tiene una alta proporción de “Sí” en la categoría “success” y bajas en “failure” y “unknown”, indicando que el historial de campañas pasadas es clave para predecir la suscripción. Sin embargo, existe una limitación: la alta proporción de nulos en “poutcome”, imputados como “unknown”, podría diluir su poder predictivo. No obstante, la variable podría seguir siendo valiosa.
+
+Por otra parte, la variable “month” muestra variaciones significativas, con algunos meses (marzo, septiembre y octubre) presentando mayores tasas de “Sí”, sugiriendo un efecto estacional en la efectividad de las campañas, por lo que es una variable con potencial predictivo. Por otra parte, destaca “job” por las proporciones de “Sí” en “retired” y “student” frente a “blue-collar” y “management”, reflejando diferencias socioeconómicas. 
+
+Asimismo, destaca la variable “education”, la que indica que “tertiary” tiene una mayor predisposición a tomar el depósito, mientras que las variables “housing” y “loan” sugieren que la ausencia de préstamos favorece la suscripción”.
+
+Por último, variables como “marital”, “contact” y “default” parecen tener menos potencial predictivo, ya que muestran efectos menos marcados, con menor impacto predictivo.
 
 ---
 
@@ -224,35 +258,6 @@ Responda: ¿Cuáles creen que son las variables categóricas más relevantes a l
 
 Identifique _outliers_ entre las variables numéricas del dataset. Además, impute estas observaciones si usted lo considera necesario. Justifique su decisión.
 """
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous']  
-
-# Vemos primero las distribuciones de las variables
-fig, axes = plt.subplots(2, 3, figsize=(15, 8))  # 2 rows, 3 columns
-axes = axes.flatten()
-
-for i, var in enumerate(numericas):
-    axes[i].hist(df_consolidado[var].dropna(), bins=30, edgecolor='black')  # dropna to avoid issues
-    axes[i].set_title(f'Distribución de {var}')
-    axes[i].set_xlabel(var)
-    axes[i].set_ylabel('Frecuencia')
-
-plt.tight_layout()
-plt.show()
-
-# Boxplot para ver outliers
-fig, axes = plt.subplots(2, 3, figsize=(16, 8))  # 2 rows, 4 columns
-axes = axes.flatten()  # flatten 2D array of axes into 1D list
-
-for i, var in enumerate(numericas):
-    sns.boxplot(y=df_consolidado[var], ax=axes[i])
-    axes[i].set_title(var)
-
-plt.tight_layout()
-plt.show()
-
 print(f"  Duración > 3,600: {len(df_consolidado[df_consolidado['duration'] > 3000])}")
 print(f"  Contacto previo > 100: {len(df_consolidado[df_consolidado['previous'] > 100])}")
 
