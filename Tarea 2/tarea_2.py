@@ -30,9 +30,9 @@ Ayudantes:
 **Complete sus datos:**
 
 - Nombre y apellido:
-  - `# Completar`
-  - `# Completar`
-- Usuario de GitHub (opcional):  `# Completar`
+  - `# Xiomara Kuwae`
+  - `# Luis José López`
+- Usuario de GitHub (opcional):  `# https://github.com/luijolo/Machine-Learning/tree/main/Tarea%202`
 
 ## Instrucciones
 
@@ -120,8 +120,7 @@ En el sitio web [https://archive.ics.uci.edu/dataset/222/bank+marketing](https:/
 
 Use el código otorgado a continuación para importar los datos.
 """
-
-pip install ucimlrepo
+!pip install ucimlrepo
 
 from ucimlrepo import fetch_ucirepo
 
@@ -165,20 +164,38 @@ print("\nEstadísticas descriptivas para variables categóricas:")
 print(df_consolidado.select_dtypes(include=['object', 'category']).describe())
 
 
-
 """### Pregunta 1.1
 
 Identifique las columnas que presentan _missing values_ e indique el número de _missing values_ que poseen.
 
 Impute los valores nulos con el método que estime conveniente, justificando su decisión.
 """
+# Total de missings
+df_consolidado.isnull().sum().sort_values(ascending=False) 
 
+# Completar missings de poutcome
+df_consolidado['poutcome'].unique()
+df_consolidado['poutcome'] = df_consolidado['poutcome'].fillna('unknown')
+
+# Completar missings de contact
+df_consolidado['contact'].describe()
+df_consolidado['contact'].unique()
+
+#Reemplazamos por la moda
+moda_contact = df_consolidado['contact'].mode()[0]
+df_consolidado['contact'] = df_consolidado['contact'].fillna(moda_contact)
+
+# Completar missings de education
+
+# Completar missings de job
 
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+*Para el caso de poutcome se optó crear una categoría de unknowm para mantener la columna 
+*Para contact se optó por reemplazar por la moda porque generaría el menor impacto sobre la variable que tiene solo 2 categorías.
+*
 
 
 ---
