@@ -141,6 +141,29 @@ Concatene `X` e `y` en un dataframe consolidado.
 Muestre las primeras cinco observaciones en el dataframe consolidado. Despliegue información sobre el tipo de variable de cada una de las columnas del dataframe y despliegue estadísticas descriptivas de las variables según su tipo.
 """
 
+import pandas as pd
+
+# 1. Concatenar X e y en un DataFrame consolidado
+# Usamos pd.concat. Asumimos que quieres concatenar horizontalmente (columnas)
+df_consolidado = pd.concat([X, y], axis=1)
+
+# 2. Mostrar las primeras cinco observaciones
+print("Primeras cinco observaciones del DataFrame consolidado:")
+print(df_consolidado.head())
+
+# 3. Mostrar información sobre el tipo de variable de cada columna
+print("\nInformación sobre los tipos de datos de las columnas:")
+print(df_consolidado.dtypes)
+
+# 4. Mostrar estadísticas descriptivas según el tipo de variable
+# Estadísticas para variables numéricas
+print("\nEstadísticas descriptivas para variables numéricas:")
+print(df_consolidado.select_dtypes(include=['int64', 'float64']).describe())
+
+# Estadísticas para variables categóricas (si las hay)
+print("\nEstadísticas descriptivas para variables categóricas:")
+print(df_consolidado.select_dtypes(include=['object', 'category']).describe())
+
 
 
 """### Pregunta 1.1
