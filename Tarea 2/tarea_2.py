@@ -170,32 +170,34 @@ Identifique las columnas que presentan _missing values_ e indique el número de 
 
 Impute los valores nulos con el método que estime conveniente, justificando su decisión.
 """
-# Total de missings
-df_consolidado.isnull().sum().sort_values(ascending=False) 
+# 1. Identificar columnas con valores nulos (ya proporcionado, pero verificamos)
+print("Columnas con valores nulos y su cantidad:")
+missing_values = df_consolidado.isnull().sum()
+missing_values = missing_values[missing_values > 0]
+print(missing_values)
 
-# Completar missings de poutcome
-df_consolidado['poutcome'].unique()
-df_consolidado['poutcome'] = df_consolidado['poutcome'].fillna('unknown')
+# 2. Imputación de valores nulos
+for column in missing_values.index:
+    if column == 'poutcome':
+        # Imputar poutcome con una nueva categoría 'unknown'
+        df_consolidado[column].fillna('unknown', inplace=True)
+        print(f"Imputado '{column}' con la categoría 'unknown'")
+    else:
+        # Imputar job, education y contact con la moda
+        mode_value = df_consolidado[column].mode()[0]
+        df_consolidado[column].fillna(mode_value, inplace=True)
+        print(f"Imputado '{column}' con la moda: {mode_value}")
 
-# Completar missings de contact
-df_consolidado['contact'].describe()
-df_consolidado['contact'].unique()
-
-#Reemplazamos por la moda
-moda_contact = df_consolidado['contact'].mode()[0]
-df_consolidado['contact'] = df_consolidado['contact'].fillna(moda_contact)
-
-# Completar missings de education
-
-# Completar missings de job
+# 3. Verificar que no queden valores nulos
+print("\nValores nulos después de la imputación:")
+print(df_consolidado.isnull().sum())
 
 
 """---
 
 
-*Para el caso de poutcome se optó crear una categoría de unknowm para mantener la columna 
-*Para contact se optó por reemplazar por la moda porque generaría el menor impacto sobre la variable que tiene solo 2 categorías.
-*
+*Para el caso de poutcome se optó crear una categoría de unknowm para mantener la columna y los datos que aportan sus otras categorías.
+*Para contact, job y education se optó por reemplazar por la moda porque generaría el menor impacto sobre la distribución de las variables.
 
 
 ---
