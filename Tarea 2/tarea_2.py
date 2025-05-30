@@ -320,7 +320,6 @@ Adicionalmente, elimine del análisis la variable `day_of_week`. Si considera ne
 """
 
 
-
 """## Modelos
 
 En esta sección aplicaremos los algoritmos de clasificación vistos en el curso. Específicamente, compararemos el rendimiento de los siguientes modelos:
