@@ -196,8 +196,9 @@ print(df_consolidado.isnull().sum())
 """---
 
 
-*Para el caso de poutcome se optó crear una categoría de unknowm para mantener la columna y los datos que aportan sus otras categorías.
-*Para contact, job y education se optó por reemplazar por la moda porque generaría el menor impacto sobre la distribución de las variables.
+*Para el caso de poutcome se optó crear una categoría de unknowm para mantener la columna 
+*Para contact se optó por reemplazar por la moda porque generaría el menor impacto sobre la variable que tiene solo 2 categorías.
+*
 
 
 ---
@@ -219,23 +220,37 @@ categorical_vars = ['job', 'marital', 'education', 'default', 'housing', 'loan',
 # Configurar el estilo de los gráficos
 sns.set(style="whitegrid")
 
-# Generar histogramas para cada variable categórica, desagregados por 'y'
-for var in categorical_vars:
-    plt.figure(figsize=(10, 6))
-    sns.countplot(data=df_consolidado, x=var, hue='y', palette='Set2')
-    plt.title(f'Distribución de {var} por Suscripción al Depósito')
-    plt.xlabel(var)
-    plt.ylabel('Frecuencia')
-    plt.xticks(rotation=45)
-    plt.legend(title='Suscripción (y)', labels=['No', 'Sí'])
-    plt.tight_layout()
-    plt.show()
+# Crear una figura con subplots en una cuadrícula de 3x3
+fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(20, 15))
 
+# Aplanar el array de ejes para facilitar la iteración
+axes = axes.flatten()
+
+# Generar histogramas para cada variable categórica
+for i, var in enumerate(categorical_vars):
+    sns.countplot(data=df_consolidado, x=var, hue='y', palette='Set2', ax=axes[i])
+    axes[i].set_title(f'Distribución de {var} por Suscripción')
+    axes[i].set_xlabel(var)
+    axes[i].set_ylabel('Frecuencia')
+    axes[i].tick_params(axis='x', rotation=45)
+    axes[i].legend(title='Suscripción (y)', labels=['No', 'Sí'])
+
+# Ajustar el diseño para evitar solapamiento
+plt.tight_layout()
+
+# Mostrar la figura
+plt.show()
 """---
 
 
-*Escriba* su respuesta en esta celda...
 
+Al analizar los histogramas, y de manera intuitiva, se puede concluir que poutcome es la variable más influyente, ya que tiene una alta proporción de “Sí” en la categoría “success” y bajas en “failure” y “unknown”, indicando que el historial de campañas pasadas es clave para predecir la suscripción. Sin embargo, existe una limitación: la alta proporción de nulos en “poutcome”, imputados como “unknown”, podría diluir su poder predictivo. No obstante, la variable podría seguir siendo valiosa.
+
+Por otra parte, la variable “month” muestra variaciones significativas, con algunos meses (marzo, septiembre y octubre) presentando mayores tasas de “Sí”, sugiriendo un efecto estacional en la efectividad de las campañas, por lo que es una variable con potencial predictivo. Por otra parte, destaca “job” por las proporciones de “Sí” en “retired” y “student” frente a “blue-collar” y “management”, reflejando diferencias socioeconómicas. 
+
+Asimismo, destaca la variable “education”, la que indica que “tertiary” tiene una mayor predisposición a tomar el depósito, mientras que las variables “housing” y “loan” sugieren que la ausencia de préstamos favorece la suscripción”.
+
+Por último, variables como “marital”, “contact” y “default” parecen tener menos potencial predictivo, ya que muestran efectos menos marcados, con menor impacto predictivo.
 
 ---
 
