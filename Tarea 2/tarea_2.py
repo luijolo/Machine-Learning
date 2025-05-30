@@ -321,7 +321,7 @@ Adicionalmente, elimine del análisis la variable `day_of_week`. Si considera ne
 
 import numpy as np
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, MinMaxScaler, LabelEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.base import BaseEstimator, TransformerMixin
 
@@ -347,13 +347,18 @@ class MultiColumnLabelEncoder(BaseEstimator, TransformerMixin):
 numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous']
 categoricas_no_binarias = ['job', 'marital', 'contact', 'poutcome']
 dummies_multinivel = ['default', 'housing', 'loan']
-label_ordinal = ['month', 'education']  # month y education con su orden natural
-columnas_a_eliminar = ['day_of_week'] + numericas + categoricas_no_binarias
+label_ordinal = ['month', 'education']  # month y education con orden natural
 
-# Crear DataFrame de features (X) excluyendo 'y' como variable objetivo
+# Crear DataFrame de características (X) excluyendo 'y'
 X = df_consolidado.drop(columns=['y'])
+y = df_consolidado['y']
 
-# Definir transformaciones
+# Transformar y (de "yes"/"no" a 0/1)
+y_encoder = LabelEncoder()
+y_encoded = y_encoder.fit_transform(y)  # "no" -> 0, "yes" -> 1
+print("Primeros valores de y_encoded:", y_encoded[:5])
+
+# Definir transformaciones para X
 preprocessor = ColumnTransformer(
     transformers=[
         ('num', StandardScaler(), numericas),
@@ -364,19 +369,34 @@ preprocessor = ColumnTransformer(
             ('scale', MinMaxScaler())
         ]), label_ordinal)
     ],
-    remainder='passthrough'  # Mantener otras columnas no transformadas
+    remainder='drop'  # Eliminar columnas no transformadas (e.g., day_of_week)
 )
 
-# Crear y aplicar el pipeline
+# Crear y aplicar el pipeline a X
 pipeline = Pipeline([
     ('preprocessor', preprocessor)
 ])
 
-# Aplicar el pipeline a X
+# Transformar X
 X_processed = pipeline.fit_transform(X)
 
+# Obtener nombres de las nuevas columnas (para inspección)
+num_cols = numericas
+cat_transformer = pipeline.named_steps['preprocessor'].named_transformers_['cat']
+cat_cols = cat_transformer.get_feature_names_out(categoricas_no_binarias)
+dum_transformer = pipeline.named_steps['preprocessor'].named_transformers_['dummies']
+dum_cols = dum_transformer.get_feature_names_out(dummies_multinivel)
+ord_cols = label_ordinal
+new_columns = list(num_cols) + list(cat_cols) + list(dum_cols) + list(ord_cols)
+
+# Convertir X_processed a DataFrame (para inspección)
+X_processed_df = pd.DataFrame(X_processed, columns=new_columns)
+print("Primeras filas de X_processed_df:")
+print(X_processed_df.head())
+print("\nColumnas transformadas:", X_processed_df.columns.tolist())
+
 # Verificar formas
-print("Forma del dataset original:", X.shape)
+print("\nForma del dataset original:", X.shape)
 print("Forma del dataset procesado:", X_processed.shape)
 
 # Calcular número de nuevas columnas
@@ -416,7 +436,6 @@ print(pd.Series(y_test).value_counts(normalize=True))
 # Verificar las formas de los conjuntos
 print("\nForma de X_train:", X_train.shape)
 print("Forma de X_test:", X_test.shape)
-
 
 """### Pregunta 1.6
 
