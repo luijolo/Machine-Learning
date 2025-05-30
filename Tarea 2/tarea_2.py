@@ -229,6 +229,20 @@ import matplotlib.pyplot as plt
 
 numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous']  
 
+# Vemos primero las distribuciones de las variables
+fig, axes = plt.subplots(2, 3, figsize=(15, 8))  # 2 rows, 3 columns
+axes = axes.flatten()
+
+for i, var in enumerate(numericas):
+    axes[i].hist(df_consolidado[var].dropna(), bins=30, edgecolor='black')  # dropna to avoid issues
+    axes[i].set_title(f'Distribución de {var}')
+    axes[i].set_xlabel(var)
+    axes[i].set_ylabel('Frecuencia')
+
+plt.tight_layout()
+plt.show()
+
+# Boxplot para ver outliers
 fig, axes = plt.subplots(2, 3, figsize=(16, 8))  # 2 rows, 4 columns
 axes = axes.flatten()  # flatten 2D array of axes into 1D list
 
@@ -239,20 +253,15 @@ for i, var in enumerate(numericas):
 plt.tight_layout()
 plt.show()
 
-plt.figure(figsize=(8, 6))
-plt.scatter(df['X_VARIABLE'], df['Y_VARIABLE'], alpha=0.6)
-plt.xlabel('X Variable')
-plt.ylabel('Y Variable')
-plt.title('Scatter Plot')
-plt.grid(True)
-plt.tight_layout()
-plt.show()
+print(f"  Duración > 3,600: {len(df_consolidado[df_consolidado['duration'] > 3000])}")
+print(f"  Contacto previo > 100: {len(df_consolidado[df_consolidado['previous'] > 100])}")
 
+df_consolidado = df_consolidado[df_consolidado['previous'] <= 99]
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+*Se eliminaron las personas contactadas 100 veces o más previamente (1). Se optó por no editar la variable duration dadoq que no se utilizará en el modelo final, sino solo como benchmark según lo recomendado.
 
 
 ---
@@ -274,8 +283,19 @@ Una vez creado el pipeline, aplíquelo a su conjunto de features (`X`). Muestre 
 
 Adicionalmente, elimine del análisis la variable `day_of_week`. Si considera necesario realizar transformaciones adicionales a las variables, realicelas en este punto.
 """
+# Estandarizar variables numericas
+numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous'] 
 
+# One Hot Encoding en categoricas
+categoricas = ['job', 'marital', 'education', 'contact', 'poutcome']
 
+# Eliminar columnas viejas
+df_consolidado = df_consolidado.drop('age', 'balance', 'duration', 'campaign', 'pdays', 'previous', 'job', 'marital', 'education', 'contact', 'poutcome', axis=1)
+
+# Dummies multinivel
+dummies = ['default', 'housing', 'loan', 'y']
+
+# Label Encoding multinivel
 
 """## Modelos
 
