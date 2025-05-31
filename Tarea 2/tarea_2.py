@@ -424,6 +424,8 @@ En caso de que el conjunto de datos no esté balanceado, asegúrese de que la di
 
 Use la semilla `random_state` = 123.
 """
+from sklearn.model_selection import train_test_split
+
 # Dividir en conjuntos de entrenamiento y prueba, respetando el balance de clases
 X_train, X_test, y_train, y_test = train_test_split(X_processed, y_encoded, test_size=0.2, random_state=123, stratify=y_encoded)
 
@@ -446,13 +448,36 @@ Asegúrese de que el modelo sea capaz de lidiar con potenciales desbalances. Par
 
 Despliege el $F_1\ Score$ del modelo sobre la base de entrenamiento. Luego, grafique una representación del árbol entrenado. ¿Qué puede decir sobre este modelo no regularizado?
 """
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+from sklearn.tree import plot_tree
+import matplotlib.pyplot as plt
 
+# Creacion del árbol
+model = DecisionTreeClassifier(random_state=123, class_weight='balanced')
 
+# Entrenamos con set de entrenamiento
+model.fit(X_train, y_train)
+
+# Predicción sobre base de entrenamiento
+y_train_pred = model.predict(X_train)
+
+# Calculamos F1 Score
+f1_train = f1_score(y_train, y_train_pred, average='binary')
+print(f"F1 score entrenamiento: {f1_train:.4f}")
+
+# Representación gráfica del árbol
+feature_names = [f"feature_{i}" for i in range(X_train.shape[1])]
+
+plt.figure(figsize=(20,10))
+plot_tree(model, feature_names=feature_names, filled=True, rounded=True, fontsize=12)
+plt.show()
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+*Como no se impuso una profundidad máxima el modelo se amplio generando un árbol demasiado largo y complejo, poco interpretable. Como se probó el F1 Score solo en la base de entrenamiento, este alcanzó el valor de 1, pero quizá un árbol tan largo y complejo tenga una mala relación tiempo de cómputo-precisión por su complejidad y tamaño.
 
 
 ---
@@ -461,19 +486,24 @@ Despliege el $F_1\ Score$ del modelo sobre la base de entrenamiento. Luego, graf
 
 En el contexto particular de una campaña de marketing, donde probablemente la mayoría de clientes no harán depósitos, es importante identificar correctamente tanto los clientes que harán depósitos (clase minoritaria), como los clientes que no harán depósitos.
 
-En el primer caso, falsos negativos implican un cliente peridido. En el segundo caso, falsos positivos implicarían un gasto de marketing innecesario en clientes que no son de interés. En este sentido, si clasificamos a todos los clientes como individuos que no harán depósitos, el _accuracy_ será muy alto, pero el costo económico será muy grande.
+En el primer caso, falsos negativos implican un cliente perdido. En el segundo caso, falsos positivos implicarían un gasto de marketing innecesario en clientes que no son de interés. En este sentido, si clasificamos a todos los clientes como individuos que no harán depósitos, el _accuracy_ será muy alto, pero el costo económico será muy grande.
 
 Para penalizar tanto falsos positivos, como falsos negativos, a la vez que se busca maximizar los verdaderos positivos, nos enfocaremos en la métrica de _performance_ $F_1\ Score$.
 
 Calcule el $F_1\ Score$ de su árbol no regularizado con la muestra correcta. ¿Considera que es un buen valor? Comente.
 """
+# Predicción sobre base de testeo
+y_pred = model.predict(X_test)
 
+# Calculamos F1 Score
+f1 = f1_score(y_test, y_pred, average='binary')
+print(f"F1 score: {f1:.4f}")
 
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+*Ahora al utilizar el F1 Score medido con el test de entrenamiento, vemos que el modelo lo hace considerablemente peor, un F1 Score de 0,42 resulta bajo y demuestra que modelo no es bueno.
 
 
 ---
