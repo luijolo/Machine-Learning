@@ -672,8 +672,20 @@ Elimine las columnas `"Series Code"` y `"Country Code"`. Luego, transforme su _d
 
 ![Long to Wide Format](https://tavareshugo.github.io/r-intro-tidyverse-gapminder/fig/07-data_shapes.png)
 """
+import pandas as pd
 
+# Importamos la base de datos
+df_long = pd.read_csv('https://raw.githubusercontent.com/olherreragz/EAE3709-2025-1/refs/heads/main/T2_data/Data.csv')
 
+# Dropeamos las columnas series code y country code
+df_long = df_long.drop('Series Code', axis=1)
+df_long = df_long.drop('Country Code', axis=1)
+
+# Cambiamos el nombre a la columna año
+df_long = df_long.rename(columns={'2023 [YR2023]': 'Year'})
+
+# Transformamos de formato long a formato wide
+df = df_long.pivot(index='Country Name', columns='Series Name', values='Year')
 
 """### Pregunta 2.1
 
@@ -732,29 +744,128 @@ Debido a que la pregunta de interés es sobre identificación de grupos de país
 
 
 """
+# Como el reshape marcó country name como el índice, lo llevamos a una columna separada
+df = df.reset_index()
 
-
+# Dropeamos cada una de las categorías del dataset
+df = df[df['Country Name'] != 'Africa Eastern and Southern']
+df = df[df['Country Name'] != 'Africa Western and Central']
+df = df[df['Country Name'] != 'Arab World']
+df = df[df['Country Name'] != 'Caribbean small states']
+df = df[df['Country Name'] != 'Central Europe and the Baltics']
+df = df[df['Country Name'] != 'Early-demographic dividend']
+df = df[df['Country Name'] != 'East Asia & Pacific']
+df = df[df['Country Name'] != 'East Asia & Pacific (IDA & IBRD countries)']
+df = df[df['Country Name'] != 'East Asia & Pacific (excluding high income)']
+df = df[df['Country Name'] != 'Euro area']
+df = df[df['Country Name'] != 'Europe & Central Asia']
+df = df[df['Country Name'] != 'Europe & Central Asia (IDA & IBRD countries)']
+df = df[df['Country Name'] != 'Europe & Central Asia (excluding high income)']
+df = df[df['Country Name'] != 'European Union']
+df = df[df['Country Name'] != 'Fragile and conflict affected situations']
+df = df[df['Country Name'] != 'Heavily indebted poor countries (HIPC)']
+df = df[df['Country Name'] != 'High income']
+df = df[df['Country Name'] != 'IBRD only']
+df = df[df['Country Name'] != 'IDA & IBRD total']
+df = df[df['Country Name'] != 'IDA blend']
+df = df[df['Country Name'] != 'IDA only']
+df = df[df['Country Name'] != 'IDA total']
+df = df[df['Country Name'] != 'Late-demographic dividend']
+df = df[df['Country Name'] != 'Latin America & Caribbean']
+df = df[df['Country Name'] != 'Latin America & Caribbean (excluding high income)']
+df = df[df['Country Name'] != 'Latin America & the Caribbean (IDA & IBRD countries)']
+df = df[df['Country Name'] != 'Least developed countries: UN classification']
+df = df[df['Country Name'] != 'Low & middle income']
+df = df[df['Country Name'] != 'Low income']
+df = df[df['Country Name'] != 'Lower middle income']
+df = df[df['Country Name'] != 'Middle East & North Africa']
+df = df[df['Country Name'] != 'Middle East & North Africa (IDA & IBRD countries)']
+df = df[df['Country Name'] != 'Middle East & North Africa (excluding high income)']
+df = df[df['Country Name'] != 'Middle income']
+df = df[df['Country Name'] != 'North America']
+df = df[df['Country Name'] != 'Not classified']
+df = df[df['Country Name'] != 'OECD members']
+df = df[df['Country Name'] != 'Other small states']
+df = df[df['Country Name'] != 'Pacific island small states']
+df = df[df['Country Name'] != 'Post-demographic dividend']
+df = df[df['Country Name'] != 'Pre-demographic dividend']
+df = df[df['Country Name'] != 'Small states']
+df = df[df['Country Name'] != 'South Asia']
+df = df[df['Country Name'] != 'South Asia (IDA & IBRD)']
+df = df[df['Country Name'] != 'Sub-Saharan Africa']
+df = df[df['Country Name'] != 'Sub-Saharan Africa (IDA & IBRD countries)']
+df = df[df['Country Name'] != 'Sub-Saharan Africa (excluding high income)']
+df = df[df['Country Name'] != 'Upper middle income']
+df = df[df['Country Name'] != 'World']
 
 """### Pregunta 2.2
 
 Reemplace todos los valores `".."` por `NA`. Luego, transforme las columnas a variables numéricas y despliegue estadísticas descriptivas.
 
 """
+import numpy as np
 
+# Reemplazamos los .. por NA
+df = df.replace('..', np.nan)
 
+# Mantenemos los nombres para no perderlos
+non_numeric = df[['Country Name']]
+
+# Cnvertimos las variables a numericas
+numeric = df.drop(columns=['Country Name']).apply(pd.to_numeric, errors='coerce')
+
+# Combinamos de nuevo nombres con variables numericas
+df = pd.concat([non_numeric, numeric], axis=1)
+
+# Estadísticas descriptivas 
+df.describe()
 
 """### Pregunta 2.3
 
 Grafique la distribución empírica de todas las variables numéricas del dataset. Comente sobre cada una de ellas.
 """
+import matplotlib.pyplot as plt
+import seaborn as sns
 
+numericas = ['Agricultural raw materials exports (% of merchandise exports)', 
+             'Computer; communications and other services (% of commercial service exports)', 
+             'Exports of goods and services (% of GDP)', 'Food exports (% of merchandise exports)', 
+             'Fuel exports (% of merchandise exports)', 'GDP growth (annual %)',
+             'High-technology exports (% of manufactured exports)', 'ICT service exports (% of service exports; BoP)', 
+             'Insurance and financial services (% of service exports; BoP)',
+             'International tourism; receipts (% of total exports)',
+             'Manufactures exports (% of merchandise exports)', 
+             'Merchandise exports to high-income economies (% of total merchandise exports)', 
+             'Merchandise exports to low- and middle-income economies in Europe & Central Asia (% of total merchandise exports)',
+             'Ores and metals exports (% of merchandise exports)', 
+             'Taxes on exports (% of tax revenue)', 
+             'Transport services (% of commercial service exports)']
 
+for col in numericas:
+    plt.figure(figsize=(6,4))
+    sns.histplot(df[col].dropna(), kde=True, bins=30)
+    plt.title(f'Distribucion de {col}')
+    plt.xlabel(col)
+    plt.ylabel('Frecuencia')
+    plt.show()
 
 """---
-
-
-*Escriba* su respuesta en esta celda...
-
+*Durante 2023, las exportaciones de materiales agrícolas estas fueron minoritarias representando en la mayor parte de los casos menos del 10% del total de exportaciones.
+Las exportaciones de servicios de computación y comunicaciones parece no tener un sesgo ni una concentración clara, aunque hay claros puntos de mayor frecuencia como entre 0 y 10% y entre 35-50%.
+Por su parte, las exportaciones totales de bienes y servicios representan en la mayor parte de la muestra entre un 15% y 35% del PIB del país.
+En cuanto a las exportaciones de alimentos, la concentración se da entre 0 y 20% del total de exportaciones de bienes. Sin embargo, esta variable tiene una cola larga teniendo valores extremos cercanos al 100%.
+De manera similar, las exportaciones de combustibles se concentran entre 0 y 5% contando con más de la mitad de las observaciones entre 0 y 15% de las exportaciones de bienes, pero mostrando una alta varianza, con valores cercanos al 100% del total de exportaciones.
+A pesar de algunos outliers, el crecimiento del PIB anual está bien concentrado alrededor del 0 con una curtosis bastante alta en torno a este valor.
+Las exportaciones de alta tecnología se concentran por debajo del 20% de las exportaciones de bienes totales, con valores extremos cercanos a 70%
+Las exportaciones de servicios de tecnologia e información (ICT) muestran una distribución similar al de las exportaciones de alta tecnolocía, pero en este caso con una mayor concentración por debajo de 20% de las exportacione de servicios y sobre todo por debajo de 10%.
+Algo muy similar sucede con las exportaciones de servicios de seguros y servicios financieros, con una menor dispersión incluso, concentrandose mayormente entre 0% y 10% de las exportaciones de sevicios totales.
+Los ingresos por turismo internacional es una variable sin observaciones por lo que se queda en blanco el gráfico.
+La distribución de las exportacines no parece tener una concentración particular, sino más bien parece que existen múltiples tipos de países que exportan manufacturas como un porcentaje alto o bajo con respecto a sus exportaciones totales.
+Las exportaciones de mercancías parece estar muy concentrada hacia países de ingresos altos, dado que la distribución de los exportaciones a estos países tiene un sesgo a la derecha concentrandose entre 80% y 100% del total de exportaciones.
+Complemento de esto último, las exportaciones de mercancías a países de bajos ingresos se concentra sobre todo en la parte más baja de la distribución cercano a 0% del total de exportaciones.
+Las exportaciones de metales y rocas crudas (ores) a pesar de tener una disperción alta, se concentra en 5 de cada 10 países entre 0 y 10% de total de exportaciones de bienes. 
+A pesar de ser una variable con muchas observaciones faltantes, la tasa de impuesto a las exportaciones se concnetran en torno a 0% pero en territorio positivo. 
+Las exportaciones de servicios de transporte muestran una concentración alrededor del 20% del total de exportaciones de servicios, con un rango amplio entre 0% y 30% aproximadamente.
 
 ---
 
@@ -764,7 +875,49 @@ Grafique la distribución empírica de todas las variables numéricas del datase
 
 Realice análisis de valores vacíos y tratamiento de estos. Se premiará mantener el mayor número de observaciones posibles bajo criterios razonables. Luego de esta pregunta no deben quedar nulos en el _dataframe_ a utilizar.
 """
+# Analizamos cuantos missing hay en cada variable
+missing_percent = df.isna().mean() * 100
+missing_percent = missing_percent[missing_percent > 0].sort_values(ascending=False)
+print(missing_percent)
 
+# Dropear variables con exceso de missings
+df = df.drop('International tourism; receipts (% of total exports)', axis=1)
+df = df.drop('Taxes on exports (% of tax revenue)', axis=1)
+
+# Sustituir por mediana en variables con pocos missings
+bajos = ['Merchandise exports to high-income economies (% of total merchandise exports)', 
+         'GDP growth (annual %)', 'Merchandise exports to low- and middle-income economies in Europe & Central Asia (% of total merchandise exports)',
+         'Fuel exports (% of merchandise exports)', 'High-technology exports (% of manufactured exports)',
+         'Agricultural raw materials exports (% of merchandise exports)', 'Food exports (% of merchandise exports)', 
+         'Ores and metals exports (% of merchandise exports)', 
+         'Insurance and financial services (% of service exports; BoP)',
+         'ICT service exports (% of service exports; BoP)', 'Exports of goods and services (% of GDP)', 
+         'Computer; communications and other services (% of commercial service exports)', 
+         'Transport services (% of commercial service exports)']
+
+for var in bajos:
+    median_val = df[var].median()
+    df[var] = df[var].fillna(median_val)
+
+# Sustituir por manufacturas
+    prom = df['Manufactures exports (% of merchandise exports)'].mean()
+    df['Manufactures exports (% of merchandise exports)'] = df['Manufactures exports (% of merchandise exports)'].fillna(prom)
+    df['Manufactures_missing'] = df['Manufactures exports (% of merchandise exports)'].isna().astype(int)
+    
+    # Comprobamos que no queden missings
+    missing_percent = df.isna().mean() * 100
+    missing_percent = missing_percent[missing_percent > 0].sort_values(ascending=False)
+    print(missing_percent)
+    
+"""---
+
+
+*Las variables con una cantidad muy alta de missings como impuestos y turismo fueron eliminadas.
+*Las variables con pocos missing (menos de 12%), fueron reemplazados por la mediana.
+*Exceptuando las exportaciones totales de manufacturas, son variables con una alta concentracación alrededor de ciertos valores, por lo que sustituir por la mediana en estos casos no afectará las distribuciones de estas variables.
+*El caso de exportaciones de nanufacturas es un caso especial porque es quizá la variable más importante de cara a lo que se quiere estimar, pero 31% es una proporción de missings muy alta. Se optó por reemplazar por la media y crear una dummy que marque las observaciones que originalmente eran missing.
+
+"""
 
 
 """## Outliers
@@ -775,8 +928,30 @@ Realice análisis de datos _outliers_. De ser necesario aplique un procesamiento
 
 Se premiará el buen criterio fundamentado.
 """
+import seaborn as sns
+import matplotlib.pyplot as plt
 
+numericas = ['Agricultural raw materials exports (% of merchandise exports)', 
+             'Computer; communications and other services (% of commercial service exports)', 
+             'Exports of goods and services (% of GDP)', 'Food exports (% of merchandise exports)', 
+             'Fuel exports (% of merchandise exports)', 'GDP growth (annual %)', 
+             'High-technology exports (% of manufactured exports)', 'ICT service exports (% of service exports; BoP)', 
+             'Insurance and financial services (% of service exports; BoP)', 
+             'Manufactures exports (% of merchandise exports)', 
+             'Merchandise exports to high-income economies (% of total merchandise exports)', 
+             'Merchandise exports to low- and middle-income economies in Europe & Central Asia (% of total merchandise exports)', 
+             'Ores and metals exports (% of merchandise exports)', 'Transport services (% of commercial service exports)', 
+             'Manufactures_missing']
 
+fig, axes = plt.subplots(3,5, figsize=(16, 8))
+axes = axes.flatten()
+
+for i, var in enumerate(numericas):
+    sns.boxplot(y=df[var], ax=axes[i])
+    axes[i].set_title(var)
+
+plt.tight_layout()
+plt.show()
 
 """---
 
