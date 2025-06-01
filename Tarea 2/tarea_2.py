@@ -146,6 +146,9 @@ import pandas as pd
 # Usamos pd.concat. Asumimos que quieres concatenar horizontalmente (columnas)
 df_consolidado = pd.concat([X, y], axis=1)
 
+# Se elimina la variable "duration"
+df_consolidado = df_consolidado.drop('duration', axis=1)
+
 # 2. Mostrar las primeras cinco observaciones
 print("Primeras cinco observaciones del DataFrame consolidado:")
 print(df_consolidado.head())
@@ -163,6 +166,8 @@ print(df_consolidado.select_dtypes(include=['int64', 'float64']).describe())
 print("\nEstadísticas descriptivas para variables categóricas:")
 print(df_consolidado.select_dtypes(include=['object', 'category']).describe())
 
+df_consolidado.head()
+
 
 """### Pregunta 1.1
 
@@ -171,25 +176,26 @@ Identifique las columnas que presentan _missing values_ e indique el número de 
 Impute los valores nulos con el método que estime conveniente, justificando su decisión.
 """
 
-# 1. Identificar columnas con valores nulos (ya proporcionado, pero verificamos)
+# 1. Identificar columnas con missing values y contarlos
 print("Columnas con valores nulos y su cantidad:")
 missing_values = df_consolidado.isnull().sum()
-missing_values = missing_values[missing_values > 0]
+missing_values = missing_values[missing_values > 0]  # Filtrar solo columnas con nulos
 print(missing_values)
 
-# 2. Imputación de valores nulos
-for column in missing_values.index:
-    if column == 'poutcome':
-        # Imputar poutcome con una nueva categoría 'unknown'
-        df_consolidado[column].fillna('unknown', inplace=True)
-        print(f"Imputado '{column}' con la categoría 'unknown'")
-    else:
-        # Imputar job, education y contact con la moda
-        mode_value = df_consolidado[column].mode()[0]
-        df_consolidado[column].fillna(mode_value, inplace=True)
-        print(f"Imputado '{column}' con la moda: {mode_value}")
+# 2. Se elimina la variable "poutcome", por el gran % de missing (82%)
+df_consolidado = df_consolidado.drop('poutcome', axis=1)
 
-# 3. Verificar que no queden valores nulos
+# 3. Actualizar la lista de columnas con valores nulos después de eliminar 'poutcome'
+missing_values = df_consolidado.isnull().sum()
+missing_values = missing_values[missing_values > 0]  # Filtrar solo columnas con nulos
+
+# 4. Imputar valores nulos para variables categóricas
+for column in missing_values.index:
+    # Imputar con la moda para variables categóricas
+    df_consolidado[column] = df_consolidado[column].fillna(df_consolidado[column].mode()[0])
+    print(f"Imputado '{column}' (categórica) con la moda: {df_consolidado[column].mode()[0]}")
+
+# 5. Verificar que no queden valores nulos
 print("\nValores nulos después de la imputación:")
 print(df_consolidado.isnull().sum())
 
@@ -215,13 +221,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Lista de variables categóricas
-categorical_vars = ['job', 'marital', 'education', 'default', 'housing', 'loan', 'contact', 'month', 'poutcome']
+categorical_vars = ['job', 'marital', 'education', 'default', 'housing', 'loan', 'contact', 'month']
 
 # Configurar el estilo de los gráficos
 sns.set(style="whitegrid")
 
-# Crear una figura con subplots en una cuadrícula de 3x3
-fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(20, 15))
+# Crear una figura con subplots en una cuadrícula 2x4
+fig, axes = plt.subplots(nrows=2, ncols=4, figsize=(20, 10))
 
 # Aplanar el array de ejes para facilitar la iteración
 axes = axes.flatten()
@@ -240,13 +246,10 @@ plt.tight_layout()
 
 # Mostrar la figura
 plt.show()
+
 """---
 
-
-
-Al analizar los histogramas, y de manera intuitiva, se puede concluir que poutcome es la variable más influyente, ya que tiene una alta proporción de “Sí” en la categoría “success” y bajas en “failure” y “unknown”, indicando que el historial de campañas pasadas es clave para predecir la suscripción. Sin embargo, existe una limitación: la alta proporción de nulos en “poutcome”, imputados como “unknown”, podría diluir su poder predictivo. No obstante, la variable podría seguir siendo valiosa.
-
-Por otra parte, la variable “month” muestra variaciones significativas, con algunos meses (marzo, septiembre y octubre) presentando mayores tasas de “Sí”, sugiriendo un efecto estacional en la efectividad de las campañas, por lo que es una variable con potencial predictivo. Por otra parte, destaca “job” por las proporciones de “Sí” en “retired” y “student” frente a “blue-collar” y “management”, reflejando diferencias socioeconómicas. 
+Al analizar los histogramas, la variable “month” muestra variaciones significativas, con algunos meses (marzo, septiembre y octubre) presentando mayores tasas de “Sí”, sugiriendo un efecto estacional en la efectividad de las campañas, por lo que es una variable con potencial predictivo. Por otra parte, destaca “job” por las proporciones de “Sí” en “retired” y “student” frente a “blue-collar” y “management”, reflejando diferencias socioeconómicas. 
 
 Asimismo, destaca la variable “education”, la que indica que “tertiary” tiene una mayor predisposición a tomar el depósito, mientras que las variables “housing” y “loan” sugieren que la ausencia de préstamos favorece la suscripción”.
 
@@ -261,42 +264,50 @@ Identifique _outliers_ entre las variables numéricas del dataset. Además, impu
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous']  
+# Lista de variables numéricas
+numericas = ['age', 'balance', 'campaign', 'pdays', 'previous']
 
 # Vemos primero las distribuciones de las variables
 fig, axes = plt.subplots(2, 3, figsize=(15, 8))  # 2 rows, 3 columns
 axes = axes.flatten()
 
 for i, var in enumerate(numericas):
-    axes[i].hist(df_consolidado[var].dropna(), bins=30, edgecolor='black')  # dropna to avoid issues
+    axes[i].hist(df_consolidado[var].dropna(), bins=30, edgecolor='black')
     axes[i].set_title(f'Distribución de {var}')
     axes[i].set_xlabel(var)
     axes[i].set_ylabel('Frecuencia')
+
+# Ocultar el subplot vacío (sexto subplot)
+axes[5].set_visible(False)
 
 plt.tight_layout()
 plt.show()
 
 # Boxplot para ver outliers
-fig, axes = plt.subplots(2, 3, figsize=(16, 8))  # 2 rows, 4 columns
-axes = axes.flatten()  # flatten 2D array of axes into 1D list
+fig, axes = plt.subplots(2, 3, figsize=(15, 8))  # 2 rows, 3 columns
+axes = axes.flatten()
 
 for i, var in enumerate(numericas):
     sns.boxplot(y=df_consolidado[var], ax=axes[i])
     axes[i].set_title(var)
 
+# Ocultar el subplot vacío (sexto subplot)
+axes[5].set_visible(False)
+
 plt.tight_layout()
 plt.show()
 
-print(f"  Duración > 3,600: {len(df_consolidado[df_consolidado['duration'] > 3000])}")
-print(f"  Contacto previo > 100: {len(df_consolidado[df_consolidado['previous'] > 100])}")
+# Verificar outliers en 'previous'
+print(f"Contacto previo > 100: {len(df_consolidado[df_consolidado['previous'] > 100])}")
 
+# Filtrar outliers en 'previous'
 df_consolidado = df_consolidado[df_consolidado['previous'] <= 99]
 
 
 """---
 
 
-* Se eliminaron las personas contactadas 100 veces o más previamente (1). Se optó por no editar la variable duration dado que no se utilizará en el modelo final, sino solo como benchmark según lo recomendado.
+* Se eliminaron las personas contactadas 100 veces o más previamente (1). 
 
 
 ---
@@ -344,9 +355,9 @@ class MultiColumnLabelEncoder(BaseEstimator, TransformerMixin):
         return X_transformed
 
 # Definir columnas
-numericas = ['age', 'balance', 'duration', 'campaign', 'pdays', 'previous']
-categoricas_no_binarias = ['job', 'marital', 'contact', 'poutcome']
-dummies_multinivel = ['default', 'housing', 'loan']
+numericas = ['age', 'balance', 'campaign', 'pdays', 'previous']
+categoricas_binarias = ['default', 'housing', 'loan']
+dummies_multinivel = ['job', 'marital', 'contact']
 label_ordinal = ['month', 'education']  # month y education con orden natural
 
 # Crear DataFrame de características (X) excluyendo 'y'
@@ -362,8 +373,8 @@ print("Primeros valores de y_encoded:", y_encoded[:5])
 preprocessor = ColumnTransformer(
     transformers=[
         ('num', StandardScaler(), numericas),
-        ('cat', OneHotEncoder(drop='first', handle_unknown='ignore', sparse_output=False), categoricas_no_binarias),
-        ('dummies', OneHotEncoder(drop='first', sparse_output=False), dummies_multinivel),
+        ('cat', OneHotEncoder(drop='first', handle_unknown='ignore', sparse_output=False), categoricas_binarias),
+        ('dummies', OneHotEncoder(drop='first', handle_unknown='ignore', sparse_output=False), dummies_multinivel),
         ('ordinal', Pipeline([
             ('label', MultiColumnLabelEncoder()),
             ('scale', MinMaxScaler())
@@ -383,7 +394,7 @@ X_processed = pipeline.fit_transform(X)
 # Obtener nombres de las nuevas columnas (para inspección)
 num_cols = numericas
 cat_transformer = pipeline.named_steps['preprocessor'].named_transformers_['cat']
-cat_cols = cat_transformer.get_feature_names_out(categoricas_no_binarias)
+cat_cols = cat_transformer.get_feature_names_out(categoricas_binarias)
 dum_transformer = pipeline.named_steps['preprocessor'].named_transformers_['dummies']
 dum_cols = dum_transformer.get_feature_names_out(dummies_multinivel)
 ord_cols = label_ordinal
@@ -449,35 +460,54 @@ Asegúrese de que el modelo sea capaz de lidiar con potenciales desbalances. Par
 Despliege el $F_1\ Score$ del modelo sobre la base de entrenamiento. Luego, grafique una representación del árbol entrenado. ¿Qué puede decir sobre este modelo no regularizado?
 """
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import f1_score
+from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.tree import plot_tree
 import matplotlib.pyplot as plt
 
-# Creacion del árbol
-model = DecisionTreeClassifier(random_state=123, class_weight='balanced')
+# Crear árbol de decisión sin profundidad máxima, con manejo de desbalance
+dt_classifier = DecisionTreeClassifier(class_weight='balanced', random_state=123)
 
-# Entrenamos con set de entrenamiento
-model.fit(X_train, y_train)
+# Entrenar con el set de entrenamiento
+dt_classifier.fit(X_train, y_train)
 
-# Predicción sobre base de entrenamiento
-y_train_pred = model.predict(X_train)
+# Predicción sobre el conjunto de prueba
+y_test_pred_dt1 = dt_classifier.predict(X_test)
 
-# Calculamos F1 Score
-f1_train = f1_score(y_train, y_train_pred, average='binary')
-print(f"F1 score entrenamiento: {f1_train:.4f}")
+# Calcular el F1 Score en el conjunto de prueba
+f1_test = f1_score(y_test, y_test_pred_dt1)
+print(f"F1 Score en el conjunto de prueba: {f1_test:.4f}")
 
-# Representación gráfica del árbol
-feature_names = [f"feature_{i}" for i in range(X_train.shape[1])]
-
-plt.figure(figsize=(20,10))
-plot_tree(model, feature_names=feature_names, filled=True, rounded=True, fontsize=12)
+# Visualizar el árbol usando plot_tree
+plt.figure(figsize=(20, 10))
+plot_tree(
+    dt_classifier,
+    feature_names=new_columns,
+    class_names=['No', 'Sí'],
+    filled=True,
+    rounded=True,
+    max_depth=3,  # Limitar la profundidad para que sea legible
+    fontsize=10
+)
+plt.title("Árbol de Decisión (Profundidad Máxima Visualizada: 3)", fontsize=14)
 plt.show()
+
+# Lista para almacenar los resultados
+results = []
+
+# Resultados Árbol de Decisión sin profundidad máxima
+results.append({
+    'Modelo': 'Árbol de Decisión sin profundidad máxima',
+    'F1 Score': f1_score(y_test, y_test_pred_dt1),
+    'Precisión': precision_score(y_test, y_test_pred_dt1),
+    'Recall': recall_score(y_test, y_test_pred_dt1),
+    'AUC-ROC': roc_auc_score(y_test, dt_classifier.predict_proba(X_test)[:, 1])
+})
 
 """---
 
 
-*Como no se impuso una profundidad máxima el modelo se amplio generando un árbol demasiado largo y complejo, poco interpretable. Como se probó el F1 Score solo en la base de entrenamiento, este alcanzó el valor de 1, pero quizá un árbol tan largo y complejo tenga una mala relación tiempo de cómputo-precisión por su complejidad y tamaño.
+*Como no se impuso una profundidad máxima el modelo se amplio generando un árbol demasiado largo y complejo, poco interpretable. Pese a ser un árbol tan largo y complejo, el F1 score es bastante bajo (0.25). Además tiene una mala relación tiempo de cómputo-precisión por su complejidad y tamaño. La complejidad de este modelo sugiere que se está incurriendo en overfitting: capturando ruido y detalles específicos que no generalizan bien al conjunto de prueba.
 
 
 ---
@@ -493,7 +523,7 @@ Para penalizar tanto falsos positivos, como falsos negativos, a la vez que se bu
 Calcule el $F_1\ Score$ de su árbol no regularizado con la muestra correcta. ¿Considera que es un buen valor? Comente.
 """
 # Predicción sobre base de testeo
-y_pred = model.predict(X_test)
+y_pred = dt_classifier.predict(X_test)
 
 # Calculamos F1 Score
 f1 = f1_score(y_test, y_pred, average='binary')
@@ -503,7 +533,7 @@ print(f"F1 score: {f1:.4f}")
 """---
 
 
-*Ahora al utilizar el F1 Score medido con el test de entrenamiento, vemos que el modelo lo hace considerablemente peor, un F1 Score de 0,42 resulta bajo y demuestra que modelo no es bueno.
+*Ahora al utilizar el F1 Score medido con el test de prueba, vemos que el modelo lo hace considerablemente peor, un F1 Score de 0,25 resulta bajo y demuestra que modelo no es bueno, ya que no está capturando patrones relevantes en los datos.
 
 
 ---
@@ -515,13 +545,46 @@ Entrene un árbol clasificador con profundad máxima del árbol igual a 16. Llam
 Grafique una representación del árbol entrenado. ¿Qué puede decir sobre este modelo no regularizado?
 """
 
+# Crear el árbol de decisión con profundidad máxima 16 y manejo de desbalance
+dt_classifier = DecisionTreeClassifier(max_depth=16, class_weight='balanced', random_state=123)
 
+# Entrenamos con set de entrenamiento
+dt_classifier.fit(X_train, y_train)
+
+# Predicción sobre el conjunto de prueba
+y_test_pred_dt2 = dt_classifier.predict(X_test)
+
+# Calcular el F1 Score en el conjunto de prueba
+f1_test = f1_score(y_test, y_test_pred_dt2)
+print(f"F1 Score en el conjunto de prueba: {f1_test:.4f}")
+
+# Visualizar el árbol usando plot_tree
+plt.figure(figsize=(20, 10))
+plot_tree(
+    dt_classifier,
+    feature_names=new_columns,  # Nombres de las columnas transformadas (de la Pregunta 1.4)
+    class_names=['No', 'Sí'],  # Clases de la variable objetivo
+    filled=True,  # Colorear nodos según la clase mayoritaria
+    rounded=True,  # Bordes redondeados para mejor visualización
+    max_depth=3,  # Limitar la profundidad para que sea legible
+    fontsize=10
+)
+plt.title("Árbol de Decisión (Profundidad Máxima Visualizada: 3)", fontsize=14)
+plt.show()
+
+# Resultados Árbol de Decisión con profundidad máxima 16
+results.append({
+    'Modelo': 'Árbol de Decisión sin profundidad máxima 16',
+    'F1 Score': f1_score(y_test, y_test_pred_dt2),
+    'Precisión': precision_score(y_test, y_test_pred_dt2),
+    'Recall': recall_score(y_test, y_test_pred_dt2),
+    'AUC-ROC': roc_auc_score(y_test, dt_classifier.predict_proba(X_test)[:, 1])
+})
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
-
+Con una profundidad máxima de 16, este modelo introduce una regularización leve, lo que reduce el sobreajuste en comparación con el modelo sin límite. Sin embargo, el F1 Score (0.3058) sigue siendo bajo. Este modelo parece estar en un punto intermedio, evitando un sobreajuste extremo, pero aún no está lo suficientemente regularizado para optimizar el F1 Score.
 
 ---
 
@@ -532,12 +595,45 @@ Entrene un árbol clasificador con profundad máxima del árbol igual a 8. Llama
 Grafique una representación del árbol entrenado. ¿Qué puede decir sobre este modelo no regularizado?
 """
 
+# Crear el árbol de decisión con profundidad máxima 8 y manejo de desbalance
+dt_classifier = DecisionTreeClassifier(max_depth=8, class_weight='balanced', random_state=123)
 
+# Entrenamos con set de entrenamiento
+dt_classifier.fit(X_train, y_train)
+
+# Predicción sobre el conjunto de prueba
+y_test_pred_dt3 = dt_classifier.predict(X_test)
+
+# Calcular el F1 Score en el conjunto de prueba
+f1_test = f1_score(y_test, y_test_pred_dt3)
+print(f"F1 Score en el conjunto de prueba: {f1_test:.4f}")
+
+# Visualizar el árbol usando plot_tree
+plt.figure(figsize=(20, 10))
+plot_tree(
+    dt_classifier,
+    feature_names=new_columns,  # Nombres de las columnas transformadas (de la Pregunta 1.4)
+    class_names=['No', 'Sí'],  # Clases de la variable objetivo
+    filled=True,  # Colorear nodos según la clase mayoritaria
+    rounded=True,  # Bordes redondeados para mejor visualización
+    max_depth=3,  # Limitar la profundidad para que sea legible
+    fontsize=10
+)
+plt.title("Árbol de Decisión (Profundidad Máxima Visualizada: 3)", fontsize=14)
+plt.show()
+
+# Resultados Árbol de Decisión con profundidad máxima 8
+results.append({
+    'Modelo': 'Árbol de Decisión sin profundidad máxima 8',
+    'F1 Score': f1_score(y_test, y_test_pred_dt3),
+    'Precisión': precision_score(y_test, y_test_pred_dt3),
+    'Recall': recall_score(y_test, y_test_pred_dt3),
+    'AUC-ROC': roc_auc_score(y_test, dt_classifier.predict_proba(X_test)[:, 1])
+})
 
 """---
 
-
-*Escriba* su respuesta en esta celda...
+Con una profundidad máxima de 8, este modelo aplica una regularización más fuerte, lo que previene el sobreajuste y mejora la generalización al conjunto de prueba. El F1 Score (0.3678) es el más alto entre los Árboles de Decisión.
 
 
 ---
@@ -549,12 +645,50 @@ Entrene 20 árboles de clasificación. Cada uno de ellos debe estar entrenado fi
 Gafique en una misma figura $F_1\ Score$ de entrenamiento contra $n$ y $F_1\ Score$ de prueba contra $n$ (Eje X = $n$). ¿Cuál parece ser el parámetro óptimo $n^*$ para el árbol? ¿Qué puede decir sobre el parámetro sobre _overfitting_ y generalización?
 """
 
+# Listas para almacenar los F1 Scores
+f1_train_scores = []
+f1_test_scores = []
+depths = list(range(1, 21))  # Profundidades de 1 a 20
 
+# Entrenar 20 árboles con max_depth de 1 a 20
+for n in depths:
+    # Crear y entrenar el árbol
+    dt_classifier = DecisionTreeClassifier(max_depth=n, class_weight='balanced', random_state=123)
+    dt_classifier.fit(X_train, y_train)
+
+    # Calcular F1 Score en entrenamiento
+    y_train_pred = dt_classifier.predict(X_train)
+    f1_train = f1_score(y_train, y_train_pred)
+    f1_train_scores.append(f1_train)
+
+    # Calcular F1 Score en prueba
+    y_test_pred = dt_classifier.predict(X_test)
+    f1_test = f1_score(y_test, y_test_pred)
+    f1_test_scores.append(f1_test)
+
+# Imprimir resultados
+print("F1 Scores para cada profundidad (max_depth):")
+for n, f1_train, f1_test in zip(depths, f1_train_scores, f1_test_scores):
+    print(f"max_depth={n}: F1 Train={f1_train:.4f}, F1 Test={f1_test:.4f}")
+
+# Graficar F1 Scores (entrenamiento y prueba) contra max_depth
+plt.figure(figsize=(10, 6))
+plt.plot(depths, f1_train_scores, label='F1 Score (Entrenamiento)', marker='o', color='blue')
+plt.plot(depths, f1_test_scores, label='F1 Score (Prueba)', marker='o', color='red')
+plt.xlabel('Profundidad Máxima (max_depth)')
+plt.ylabel('F1 Score')
+plt.title('F1 Score vs. Profundidad Máxima del Árbol')
+plt.legend()
+plt.grid(True)
+plt.xticks(depths)
+plt.show()
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+Si para establecer cuál es el parámetro óptimo (n*) se utiliza el criterio de observar el valor que maximiza el F1 Score del set de testeo, se elige 7 como el número óptimo de profundidad máxima para el árbol de decisión.
+
+Respecto al overfitting y generalización, en el gráfico podemos observar cómo el modelo comienza a sobreajustar a partir de la profundidad máxima de 7, mostrándose una creciente brecha entre el F1 score del set de entranemiento y el de testeo, mostrándose un claro sobreajuste en n=20 (F1 Train=0.6534, F1 Test=0.2688). En cuanto a la generalización, una profundidad intermedia, de 7, ofrece un mejor equilibrio entre aprender patrones relevantes en los datos y al mismo tiempo evitar sobreajuste. De esta manera, maximizando el desempeño en el set de testeo.
 
 
 ---
@@ -574,6 +708,91 @@ Determine la mejor combinación de parámetros y vuelva a entrenar su bosque con
 Cuando realice _Cross Validation_ y cuando entrene el modelo final, asegúrese de que el modelo sea capaz de lidiar con potenciales desbalances. Para esto se recomienda leer la documentación oficial de la *clase* `RandomForestClassifier()` (parámetros de inicialización): https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html.
 """
 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+
+# Definir el espacio de hiperparámetros
+param_grid = {
+    'n_estimators': [100, 1000],
+    'max_depth': [10, 50, 100],
+    'min_samples_leaf': [2, 4]
+}
+
+# Inicializar listas para almacenar resultados
+cv1_results = []
+best_f1_cv = -1
+best_params = None
+
+# Realizar Cross Validation con K=5 para cada combinación
+for n_est in param_grid['n_estimators']:
+    for depth in param_grid['max_depth']:
+        for min_leaf in param_grid['min_samples_leaf']:
+            # Crear y configurar el modelo con manejo de desbalance
+            rf_classifier = RandomForestClassifier(
+                n_estimators=n_est,
+                max_depth=depth,
+                min_samples_leaf=min_leaf,
+                class_weight='balanced',
+                random_state=123
+            )
+
+            # Calcular F1 Score promedio con validación cruzada (K=5)
+            f1_cv_scores = cross_val_score(
+                rf_classifier, X_train, y_train, cv=5, scoring='f1'
+            )
+            mean_f1_cv = f1_cv_scores.mean()
+            std_f1_cv = f1_cv_scores.std()
+
+            # Almacenar resultados
+            cv1_results.append({
+                'n_estimators': n_est,
+                'max_depth': depth,
+                'min_samples_leaf': min_leaf,
+                'F1 CV Mean': mean_f1_cv,
+                'F1 CV Std': std_f1_cv
+            })
+
+            # Actualizar la mejor combinación
+            if mean_f1_cv > best_f1_cv:
+                best_f1_cv = mean_f1_cv
+                best_params = {
+                    'n_estimators': n_est,
+                    'max_depth': depth,
+                    'min_samples_leaf': min_leaf
+                }
+
+# Convertir resultados a DataFrame para visualización
+cv1_results_df = pd.DataFrame(cv1_results)
+print("Resultados de Cross Validation (F1 Score promedio y desviación estándar):")
+print(cv1_results_df)
+
+# Imprimir la mejor combinación
+print("\nMejor combinación de parámetros:", best_params)
+print(f"Mejor F1 Score promedio (Cross Validation): {best_f1_cv:.4f}")
+
+# Entrenar el modelo final con la mejor combinación
+best_rf_classifier = RandomForestClassifier(
+    n_estimators=best_params['n_estimators'],
+    max_depth=best_params['max_depth'],
+    min_samples_leaf=best_params['min_samples_leaf'],
+    class_weight='balanced',
+    random_state=123
+)
+best_rf_classifier.fit(X_train, y_train)
+
+# Calcular F1 Score en el conjunto de prueba
+y_test_pred_rf = best_rf_classifier.predict(X_test)
+f1_test = f1_score(y_test, y_test_pred_rf)
+print(f"F1 Score en el conjunto de prueba: {f1_test:.4f}")
+
+# Resultados Random Forest
+results.append({
+    'Modelo': 'Random Forest',
+    'F1 Score': f1_score(y_test, y_test_pred_rf),
+    'Precisión': precision_score(y_test, y_test_pred_rf),
+    'Recall': recall_score(y_test, y_test_pred_rf),
+    'AUC-ROC': roc_auc_score(y_test, best_rf_classifier.predict_proba(X_test)[:, 1])
+})
 
 
 """### Pregunta 1.12
@@ -592,7 +811,105 @@ Determine la mejor combinación de parámetros y vuelva a entrenar su bosque con
 Asegúrese de que sus modelos sean capaces de lidiar con potenciales desbalances. Para esto se recomienda leer la documentación oficial de la *clase* `XGBClassifier()` (parámetros de inicialización): https://xgboost.readthedocs.io/en/latest/python/python_api.html.
 
 """
+pip install xgboost
+from xgboost import XGBClassifier
 
+# Calcular scale_pos_weight para manejar el desbalance
+n_negative = len(y_train[y_train == 0])  # Número de "no" (0)
+n_positive = len(y_train[y_train == 1])  # Número de "yes" (1)
+scale_pos_weight = n_negative / n_positive
+print(f"scale_pos_weight calculado: {scale_pos_weight:.2f}")
+
+# Definir el espacio de hiperparámetros
+param_grid = {
+    'n_estimators': [100, 1000],
+    'max_depth': [5, 50, 100],
+    'learning_rate': [0.05, 0.1, 0.5],
+    'max_leaves': [2, 4, 10]
+}
+
+# Inicializar listas para almacenar resultados
+cv2_results = []
+best_f1_cv = -1
+best_params = None
+
+# Realizar Cross Validation con K=5 para cada combinación
+for n_est in param_grid['n_estimators']:
+    for depth in param_grid['max_depth']:
+        for lr in param_grid['learning_rate']:
+            for leaves in param_grid['max_leaves']:
+                # Crear y configurar el modelo
+                xgb_classifier = XGBClassifier(
+                    n_estimators=n_est,
+                    max_depth=depth,
+                    learning_rate=lr,
+                    max_leaves=leaves,
+                    scale_pos_weight=scale_pos_weight,  # Manejo de desbalance
+                    random_state=123,
+                    eval_metric='logloss'  # Métrica para evitar warnings
+                )
+
+                # Calcular F1 Score promedio con validación cruzada (K=5)
+                f1_cv_scores = cross_val_score(
+                    xgb_classifier, X_train, y_train, cv=5, scoring='f1'
+                )
+                mean_f1_cv = f1_cv_scores.mean()
+                std_f1_cv = f1_cv_scores.std()
+
+                # Almacenar resultados
+                cv2_results.append({
+                    'n_estimators': n_est,
+                    'max_depth': depth,
+                    'learning_rate': lr,
+                    'max_leaves': leaves,
+                    'F1 CV Mean': mean_f1_cv,
+                    'F1 CV Std': std_f1_cv
+                })
+
+                # Actualizar la mejor combinación
+                if mean_f1_cv > best_f1_cv:
+                    best_f1_cv = mean_f1_cv
+                    best_params = {
+                        'n_estimators': n_est,
+                        'max_depth': depth,
+                        'learning_rate': lr,
+                        'max_leaves': leaves
+                    }
+
+# Convertir resultados a DataFrame para visualización
+cv2_results_df = pd.DataFrame(cv2_results)
+print("Resultados de Cross Validation (F1 Score promedio y desviación estándar):")
+print(cv2_results_df)
+
+# Imprimir la mejor combinación
+print("\nMejor combinación de parámetros:", best_params)
+print(f"Mejor F1 Score promedio (Cross Validation): {best_f1_cv:.4f}")
+
+# Entrenar el modelo final con la mejor combinación
+best_xgb_classifier = XGBClassifier(
+    n_estimators=best_params['n_estimators'],
+    max_depth=best_params['max_depth'],
+    learning_rate=best_params['learning_rate'],
+    max_leaves=best_params['max_leaves'],
+    scale_pos_weight=scale_pos_weight,
+    random_state=123,
+    eval_metric='logloss'
+)
+best_xgb_classifier.fit(X_train, y_train)
+
+# Calcular F1 Score en el conjunto de prueba
+y_test_pred_xgb = best_xgb_classifier.predict(X_test)
+f1_test = f1_score(y_test, y_test_pred)
+print(f"F1 Score en el conjunto de prueba: {f1_test:.4f}")
+
+# Resultados XGBoost
+results.append({
+    'Modelo': 'XGBoost',
+    'F1 Score': f1_score(y_test, y_test_pred_xgb),
+    'Precisión': precision_score(y_test, y_test_pred_xgb),
+    'Recall': recall_score(y_test, y_test_pred_xgb),
+    'AUC-ROC': roc_auc_score(y_test, best_xgb_classifier.predict_proba(X_test)[:, 1])
+})
 
 
 """### Pregunta 1.13
@@ -603,7 +920,29 @@ Entrene un modelo _Naïve Bayes_. Asegúrese de que el modelo sea capaz de lidia
 Despliege el $F_1\ Score$ del modelo sobre la base de entrenamiento.
 """
 
+from sklearn.naive_bayes import GaussianNB
 
+# Crear el modelo GaussianNB con priors ajustados para manejar desbalance
+nb_classifier = GaussianNB(priors=[0.5, 0.5])
+
+# Entrenar el modelo con el conjunto de entrenamiento
+nb_classifier.fit(X_train, y_train)
+
+# Predecir sobre el conjunto de prueba
+y_test_pred_nb = nb_classifier.predict(X_test)
+
+# Calcular el F1 Score en el conjunto de prueba
+f1_test = f1_score(y_test, y_test_pred_nb)
+print(f"F1 Score en el conjunto de prueba: {f1_test:.4f}")
+
+# Resultados Naïve Bayes (GaussianNB)
+results.append({
+    'Modelo': 'Naïve Bayes',
+    'F1 Score': f1_score(y_test, y_test_pred_nb),
+    'Precisión': precision_score(y_test, y_test_pred_nb),
+    'Recall': recall_score(y_test, y_test_pred_nb),
+    'AUC-ROC': roc_auc_score(y_test, nb_classifier.predict_proba(X_test)[:, 1])
+})
 
 """---
 
@@ -616,12 +955,21 @@ Evalúe y compare el desempeño de los modelos teniendo en cuenta la naturaleza 
 Para que la comparación sea clara, es útil indicar qué métricas de evaluación utilizo para comparar los modelos (por ejemplo, F1-score, precisión, recall, AUC, etc.).
 """
 
+# Mostrar resultados
+finalresults_df = pd.DataFrame(results)
 
+# Mostrar todas las columnas
+pd.set_option('display.max_columns', None)
+
+print("Comparación de modelos (en conjunto de prueba):")
+print(finalresults_df)
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+Comparando el rendimiento de los modelos, Random Forest y XGBoost son los mejores en desempeño general, presentando un F1 Score de 0.4204 y 0.4059, respectivamente), superando significativamente a los Árboles de Decisión y Naïve Bayes. En cuanto a los Árboles de Decisión, la regularización que impone un máximo de profundidad de 8 mejora de manera notable el desempeño relativo al modelo sin regularización.
+
+Respecto al desbalance, éste afecta más a los modelos sin ajustes específicos (árboles de decisión), reduciendo su capacidad para identificar la clase minoritaria. Por otro lado, los ajustes como “class weight”, “scale pos weight” o “priors” permiten mejorar el recall, pero a costa de la precisión.
 
 
 ---
