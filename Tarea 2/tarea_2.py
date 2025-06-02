@@ -811,7 +811,7 @@ Determine la mejor combinación de parámetros y vuelva a entrenar su bosque con
 Asegúrese de que sus modelos sean capaces de lidiar con potenciales desbalances. Para esto se recomienda leer la documentación oficial de la *clase* `XGBClassifier()` (parámetros de inicialización): https://xgboost.readthedocs.io/en/latest/python/python_api.html.
 
 """
-pip install xgboost
+!pip install xgboost
 from xgboost import XGBClassifier
 
 # Calcular scale_pos_weight para manejar el desbalance
@@ -1298,6 +1298,9 @@ for i, var in enumerate(numericas):
     sns.boxplot(y=df[var], ax=axes[i])
     axes[i].set_title(var, fontsize=8)
 
+# Ocultar el subplot vacío (sexto subplot)
+axes[14].set_visible(False)
+
 plt.tight_layout()
 plt.show()
 
@@ -1610,7 +1613,6 @@ plt.ylabel(X.columns[1])
 plt.title('2D KMeans Clustering (k=5)')
 plt.tight_layout()
 plt.show()
-
 
 """---
 
