@@ -948,17 +948,32 @@ axes = axes.flatten()
 
 for i, var in enumerate(numericas):
     sns.boxplot(y=df[var], ax=axes[i])
-    axes[i].set_title(var)
+    axes[i].set_title(var, fontsize=8)
 
 plt.tight_layout()
 plt.show()
 
+# Eliminamos 4 outliers de crecimiento real que están alejados del resto, por encima y por debajo
+df = df[df['GDP growth (annual %)'] <= 30 ]
+df = df[df['GDP growth (annual %)'] >= -17]
+
+# Eliminamos valores extremos de exportaciones agrícolas
+df = df[df['Agricultural raw materials exports (% of merchandise exports)'] <= 50]
+
+# Eliminamos valores extremos de exportaciones países de bajos ingresos
+df = df[df['Merchandise exports to low- and middle-income economies in Europe & Central Asia (% of total merchandise exports)'] <= 62]
+
+# Eliminamos valores extremos de servicios financieros
+df = df[df['Insurance and financial services (% of service exports; BoP)'] <= 40]
+
 """---
 
 
-*Escriba* su respuesta en esta celda...
-
-
+*Aunque existen múltiples outliers para casi todas las variables, para la mayor parte toleramos de que existan valores alejados de sus promedios por la alta varianza que existe a nivel global en términos de exportaciones y que nos gustaría mantener precisamente para determinar cuales de esos países con alta depedencia en un sector o producto en sus exportaciones podrá sufrir más las medidas arancelarias. 
+A pesar de esto, en exportaciones a países de bajos ingresos y exportaciones agrícolas si parecen existir valores extremos fuera de la masa de datos, estos outliers serán eiminados.
+Del mismo modo, los dos casos con crecimiento del PIB extremadamente por encima y por debajo del resto de la muestra mundial podría distorzionar demasiado la muestra por lo que también serán eliminados. 
+Por último, hay un caso muy extremo para las exportaciones de seguros y servicios financieros que parece demasiado alejado del resto de valores. Como se enfoca en servicio optamos por eliminar esta observación también producto de que los aranceles afectarán a las mercancías y no tanto a los servicios como tal, por lo que eliminar esta fila no deberá traer cambios en nuestros resultados.
+En total se perderan 8 observaciones, pero se tendrá una muestra más limpia de los datos que queremos estimar.
 ---
 
 ## Feature Engineering
@@ -969,8 +984,57 @@ Realice _feature engineering_ de las variables numéricas (para luego entrenar u
 
 Más adelante se le pedirá comentar sobre los resultados de sus modelos, por lo que considere que sus decisiones podrían condicionar futuras preguntas.
 """
+# Creamos variables para poder separar países
+df['Primarios'] = (df['Agricultural raw materials exports (% of merchandise exports)'] + df['Ores and metals exports (% of merchandise exports)'] + df['Food exports (% of merchandise exports)'])
+df['Manufacturas'] = 100-df['Primarios']
 
+# Crear dummy para economías primarias
+df['Primaria'] = (df['Primarios'] > df['Manufacturas']).astype(int)
 
+# Crear dummy para economías industriales
+df['Industrial'] = (df['Manufacturas'] > df['Primarios']).astype(int)
+
+# Crear dummy para economías enfocadas en tecnologías
+prom_hte = df['High-technology exports (% of manufactured exports)'].mean()
+df['Tecnologia'] = (df['High-technology exports (% of manufactured exports)'] > prom_hte).astype(int)
+
+# Crear dummy para economías terciarias
+df['Tic'] = ((df['Computer; communications and other services (% of commercial service exports)'] + df['ICT service exports (% of service exports; BoP)'] ) > (df['Insurance and financial services (% of service exports; BoP)'] + df['Transport services (% of commercial service exports)'])).astype(int)
+
+# Estandarizar variables
+from sklearn.preprocessing import StandardScaler
+numericas = ['Agricultural raw materials exports (% of merchandise exports)', 
+             'Computer; communications and other services (% of commercial service exports)', 
+             'Exports of goods and services (% of GDP)', 'Food exports (% of merchandise exports)', 
+             'Fuel exports (% of merchandise exports)', 'GDP growth (annual %)', 
+             'High-technology exports (% of manufactured exports)', 'ICT service exports (% of service exports; BoP)', 
+             'Insurance and financial services (% of service exports; BoP)', 
+             'Manufactures exports (% of merchandise exports)', 
+             'Merchandise exports to high-income economies (% of total merchandise exports)', 
+             'Merchandise exports to low- and middle-income economies in Europe & Central Asia (% of total merchandise exports)', 
+             'Ores and metals exports (% of merchandise exports)', 'Transport services (% of commercial service exports)']
+
+# Definimos las funciones
+scaler = StandardScaler()
+
+# Estandarizar las columnas
+df[numericas] = scaler.fit_transform(df[numericas])
+
+# Dropeamos variables que no serán utilizadas 
+df = df.drop('Primarios', axis=1)
+df = df.drop('Manufacturas', axis=1)
+
+"""---
+
+*Se optó por crear 4 dummies para captuar 4 características de los países a nivel mundial:
+Primaria: economías que basan sus exportaciones en bienes primarios como mineros, alimentos y agrícolas.
+Industrial: economía que basan sus exportaciones en bienes manufacturados y no primarios.
+Tecnología: economías que exportan más bienes de alta tecnología que la mediana mundial.
+Tic: economías que basan sus ventas de servicios en tecnología, información y comunicaciones.
+
+Posterior a esto, se estandarizaron las variables a utilizar en el proyecto.
+
+"""
 
 """## K-Means
 
@@ -978,13 +1042,54 @@ Más adelante se le pedirá comentar sobre los resultados de sus modelos, por lo
 
 Considerando el dataframe completo (todas sus columnas atributos), determine el número óptimo de clusters mediante el "Elbow method". Considere un rango $k \in [1, 30]$. Describa el comportamiento observado de la curva.
 """
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
+# Nos quedamos solo con las variables numericas 
+df_kmeans = df.select_dtypes(include='number')
 
+# Computamos los valores para los posibles 30 valores de k estimando el SSE
+sse = []
+
+for k in range(1, 30):
+    kmeans = KMeans(n_clusters=k, random_state=123)
+    kmeans.fit(df_kmeans)
+    sse.append(kmeans.inertia_)
+
+# Graficamos la curva de SSE para los valores
+plt.figure(figsize=(8, 5))
+plt.plot(range(1, 30), sse, marker='o')
+plt.xlabel('Número de Clusters (k)')
+plt.ylabel('Suma de errores cuadráticos (SSE)')
+plt.title('Método del Codo para encontrar el k óptimo')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# Computamos los valores para los posibles 30 valores de k estimando el Calinski-Harabasz
+from sklearn.metrics import calinski_harabasz_score
+
+scores = []
+for k in range(2, 31):
+    kmeans = KMeans(n_clusters=k, random_state=123)
+    labels = kmeans.fit_predict(df_kmeans)
+    score = calinski_harabasz_score(df_kmeans, labels)
+    scores.append(score)
+
+plt.plot(range(2, 31), scores, marker='o')
+plt.title("Método del Codo para encontrar el k óptimo")
+plt.xlabel("Número de Clusters (k)")
+plt.ylabel("Calinski-Harabasz Score")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+*La curva estimando la suma de error cuadrático nos arroja que el k óptimo es 5, porque es el que presenta el punto más bajo de error cuadrático justo antes de la curva aplanarse, es decir, el k más alto que todavía genera caída en el error.
+Como constraste, se realizó la curva utilizando el método de Calinski-Harabasz, con resultado similares: el número óptimo de k, que genera un mayor incremento del índice es 5.
 
 
 ---
@@ -997,13 +1102,132 @@ En esta pregunta defina **por lo menos 5 combinaciones de columnas** (mínimo 2 
 
 Un posible enfoque para lo anterior es tomar un _approach_ estadístico y escoger variables que empíricamente muestran mayores indicios de poder diferenciador entre las observaciones. De todas formas, recuerde que la pregunta de interés es "¿qué países se verán expuestos de forma similar a la guerra comercial?". En este sentido, es altamente recomendable escoger variables con una mayor relación al fenómeno de la guerra comercial, ya que puede ser útil para discernir de qué forma podría verse expuesto cada grupo.
 """
+# Estimamos correlaciones
+corr_matrix = df_kmeans.corr()
 
+# Presentamos las varibales que más correlacionan con las exportaciones de bienes
+target_var = 'Exports of goods and services (% of GDP)'
+correlations = corr_matrix[target_var].abs().sort_values(ascending=False)
+print(correlations)
 
+# Probamos con las 2 principales categorías
+df_prueba1 = df_kmeans[['High-technology exports (% of manufactured exports)',
+'Manufactures exports (% of merchandise exports)']]                     
+
+sse = []
+
+for k in range(1, 30):
+    kmeans = KMeans(n_clusters=k, random_state=123)
+    kmeans.fit(df_prueba1)
+    sse.append(kmeans.inertia_)
+
+plt.figure(figsize=(8, 5))
+plt.plot(range(1, 30), sse, marker='o')
+plt.xlabel('Número de Clusters (k)')
+plt.ylabel('Suma de errores cuadráticos (SSE)')
+plt.title('Método del Codo para encontrar el k óptimo')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+#### El óptimo es de k=5 de nuevo
+
+# Probamos con las 3 principales categorías
+df_prueba2 = df_kmeans[['High-technology exports (% of manufactured exports)', 
+'Tecnologia','Manufactures exports (% of merchandise exports)']]
+
+sse = []
+
+for k in range(1, 30):
+    kmeans = KMeans(n_clusters=k, random_state=123)
+    kmeans.fit(df_prueba2)
+    sse.append(kmeans.inertia_)
+
+plt.figure(figsize=(8, 5))
+plt.plot(range(1, 30), sse, marker='o')
+plt.xlabel('Número de Clusters (k)')
+plt.ylabel('Suma de errores cuadráticos (SSE)')
+plt.title('Método del Codo para encontrar el k óptimo')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+#### El óptimo es de k=8
+
+# Probamos con las 4 principales categorías
+df_prueba3 = df_kmeans[['High-technology exports (% of manufactured exports)',
+'Tecnologia','Manufactures exports (% of merchandise exports)', 
+'Insurance and financial services (% of service exports; BoP)']]
+
+sse = []
+
+for k in range(1, 30):
+    kmeans = KMeans(n_clusters=k, random_state=123)
+    kmeans.fit(df_prueba3)
+    sse.append(kmeans.inertia_)
+
+plt.figure(figsize=(8, 5))
+plt.plot(range(1, 30), sse, marker='o')
+plt.xlabel('Número de Clusters (k)')
+plt.ylabel('Suma de errores cuadráticos (SSE)')
+plt.title('Método del Codo para encontrar el k óptimo')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+#### El óptimo es de k=15
+
+# Probamos con las 4 principales categorías sin dummies creadas
+df_prueba4 = df_kmeans[['High-technology exports (% of manufactured exports)',  
+'Manufactures exports (% of merchandise exports)', 'Insurance and financial services (% of service exports; BoP)', 
+'Agricultural raw materials exports (% of merchandise exports)']]
+
+sse = []
+
+for k in range(1, 30):
+    kmeans = KMeans(n_clusters=k, random_state=123)
+    kmeans.fit(df_prueba4)
+    sse.append(kmeans.inertia_)
+
+plt.figure(figsize=(8, 5))
+plt.plot(range(1, 30), sse, marker='o')
+plt.xlabel('Número de Clusters (k)')
+plt.ylabel('Suma de errores cuadráticos (SSE)')
+plt.title('Método del Codo para encontrar el k óptimo')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+#### El óptimo es de k=15
+
+# Probamos solo con dummies y la categorías más importante
+df_prueba5 = df_kmeans[['High-technology exports (% of manufactured exports)',  
+'Tecnologia', 'Primaria', 
+'Industrial']]
+
+sse = []
+
+for k in range(1, 30):
+    kmeans = KMeans(n_clusters=k, random_state=123)
+    kmeans.fit(df_prueba5)
+    sse.append(kmeans.inertia_)
+
+plt.figure(figsize=(8, 5))
+plt.plot(range(1, 30), sse, marker='o')
+plt.xlabel('Número de Clusters (k)')
+plt.ylabel('Suma de errores cuadráticos (SSE)')
+plt.title('Método del Codo para encontrar el k óptimo')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+#### El óptimo es de k=6
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+*En base a los resultados planteados parece ser que a medida que incrementamos la cantidad de variables, el k óptimo incrementa y la caída del SSE se reduce para valores mayores: modelos de menos variables son mejores porque requieren de menores valores de k y acumulan errores menores.
+Otra característica interesante es que las dummies creadas en el inciso 2.6 no parecen aportar tanto valor: cuando se eliminan (combinación 4) el k óptimo no se ve alterado, mientras que si son incluidas, aún con la variable de mayor correlación (combinación) el modelo arroja un SSE alto y un k óptimo muy por encima del resto de modelos.
 
 
 ---
@@ -1016,15 +1240,38 @@ Estime el modelo con $k$ óptimo y las columnas escogidas. Visualice los grupos 
 
 Describa en qué se diferencian los grupos encontrados y de qué manera le podría afectar la guerra comercial a cada uno. Liste una pequeña muestra representativa de los países que contiene cada grupo.
 """
+from sklearn.cluster import KMeans
+from mpl_toolkits.mplot3d import Axes3D
 
+# Selección de variables (combinación 2)
+X = df_kmeans[['High-technology exports (% of manufactured exports)', 'Manufactures exports (% of merchandise exports)']].copy()
+
+# Ajuste del modelo KMeans
+kmeans = KMeans(n_clusters=5, random_state=123, n_init=10)
+df_kmeans['cluster'] = kmeans.fit_predict(X)
+
+# Gráfico 2D
+plt.figure(figsize=(10, 6))
+scatter = plt.scatter(
+    X.iloc[:, 0], X.iloc[:, 1],
+    c=df_kmeans['cluster'], cmap='tab10', s=50
+)
+
+plt.xlabel(X.columns[0])
+plt.ylabel(X.columns[1])
+plt.title('2D KMeans Clustering (k=5)')
+plt.tight_layout()
+plt.show()
 
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
-
-
+*El grupo más afectado será el de países que se encuentran en más de 1 y 2 desviaciones estándar en exportaciones de manufacturas y entre 1 y 5 desviación estándar de exportaciones de alta tecnología (gris en el gráfico). Entre estos países están: Singapur, Malasia y Filipinas.
+El segundo que podría sufrir más la guerra comercial serían los que se encuentran entre -1 y 1 desviación estándar de exportaciones tecnologicas, y una alta tasa de exportación de manufacturas, más de 0.5 desviaciones estándar (verde en el gráfico). Entre estos países están: Hungría, Corea del Sur y Croacia.
+El tercer grupo sería el de en medio en el gráfico (color marrón) que son países con un menor nivel de exportaciones de manufacturas, entre -0.5 y 1 desviación estándar y una baja exportación de manufacturas de alta tecnología, menos de 1 desviación estándar. Entre estos países están: Albania, Egipto y Namibia.
+El segundo grupo de países con menor riesgo son los que tienen poca exposición a exportaciones de manufacturas, entre -0.5 y -1.5 desviaciones estándar, aunque tengan una exposición alta a exportaciones de alta tecnología (azul celeste en el gráfico). Entre estos países están: Australia, Angola e Islandia. 
+El grupo de menor exposición a la guerra comercial sería el que tienen pocas exportaciones de manufacturas, entre -0.5 y -1.5 desviaciones estándar respecto a la media y pocas exportaciones de bienes de alta tecnología, entre 0 y -1 desviaciones estándar respecto a la media (grupo en color azul). Entre estos países están: Bahréin, Repúlica Centroafricana y Bolivia.
 ---
 
 ## PCA
@@ -1037,14 +1284,79 @@ Utilizando todas las variables originales y $k$ óptimo escogido en la pregunta 
 
 ¿Cuáles son las principales diferencias entre los grupos? Encuentre las variables más definitivas a la hora de agrupar países con los 2 primeros componentes principales.
 """
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
+# Selecciona las variables numéricas
+X = df_kmeans.select_dtypes(include='number')
 
+# Estandarizar las variables
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Aplicar PCA
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+# Agregar componentes al DataFrame
+df_kmeans['PCA1'] = X_pca[:, 0]
+df_kmeans['PCA2'] = X_pca[:, 1]
+
+# Graficar los componentes principales
+plt.figure(figsize=(10, 6))
+plt.scatter(df_kmeans['PCA1'], df_kmeans['PCA2'], c=df_kmeans['cluster'], cmap='tab10', s=50)
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.title('PCA (2 Components) - Colored by KMeans Clusters')
+plt.tight_layout()
+plt.show()
+
+kmeans_pca = KMeans(n_clusters=5, random_state=123, n_init=10)
+df_kmeans['cluster_pca'] = kmeans_pca.fit_predict(X_pca)
+
+plt.figure(figsize=(12, 8))
+
+# Scatter plot con colores por cluster
+scatter = plt.scatter(
+    df_kmeans['PCA1'], 
+    df_kmeans['PCA2'], 
+    c=df_kmeans['cluster_pca'], 
+    cmap='tab10', 
+    s=50
+)
+
+centroids = kmeans_pca.cluster_centers_
+
+for i, (x, y) in enumerate(centroids):
+    plt.text(x, y, f'Cluster {i}', fontsize=10, weight='bold', color='black', ha='center', va='center')
+
+plt.xlabel('PCA Component 1')
+plt.ylabel('PCA Component 2')
+plt.title('KMeans Clustering on PCA Components (Cluster Labels)')
+plt.colorbar(scatter, label='Cluster')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# Mostrar importancia en PC1 y PC2 de cada variable
+loadings = pd.DataFrame(
+    pca.components_.T,
+    columns=['PC1', 'PC2'],
+    index=X.columns
+)
+
+print("Variables más importantes en PC1:")
+print(loadings['PC1'].abs().sort_values(ascending=False).head(10))
+
+print("\nVariables más importantes en PC2:")
+print(loadings['PC2'].abs().sort_values(ascending=False).head(10))
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
-
+*El modelo con 5 clusters parece separar de manera clara los 5 grandes grupos, aunque con mucha diferencia entre cada uno. Los clusters 3 y 4 tienen una dispersión relativamente alta con respecto a los clusters 1 y 2 que parecen ser mucho más compactos.
+Para identificar los componentes correctamente, sorprendentemente resultan ser las dummies de primaria e industrial para el componente 1  y exportaciones de servicios de computación, comunicación y otros para el caso del componente 2.
 
 ---
 
@@ -1053,13 +1365,72 @@ Utilizando todas las variables originales y $k$ óptimo escogido en la pregunta 
 
 Repita lo anterior  (descripción incluida), pero con 3 componentes principales y un _scatterplot_ en 3 dimensiones.
 """
+# Selecciona las variables numéricas
+X = df_kmeans.select_dtypes(include='number')
 
+# Estandarizar las variables
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Aplicar PCA con 3 componentes
+pca = PCA(n_components=3)
+X_pca = pca.fit_transform(X_scaled)
+
+# Agregar componentes al DataFrame
+df_kmeans['PCA1'] = X_pca[:, 0]
+df_kmeans['PCA2'] = X_pca[:, 1]
+df_kmeans['PCA3'] = X_pca[:, 2]
+
+# Aplicar KMeans con los 3 componentes
+kmeans_pca = KMeans(n_clusters=5, random_state=123, n_init=10)
+df_kmeans['cluster_pca'] = kmeans_pca.fit_predict(X_pca)
+
+# Graficar en 3D con colores según cluster
+fig = plt.figure(figsize=(12, 9))
+ax = fig.add_subplot(111, projection='3d')
+
+scatter = ax.scatter(
+    df_kmeans['PCA1'], df_kmeans['PCA2'], df_kmeans['PCA3'],
+    c=df_kmeans['cluster_pca'], cmap='tab10', s=50
+)
+
+# Centroides en el espacio PCA
+centroids = kmeans_pca.cluster_centers_
+
+# Etiquetar centroides
+for i, (x, y, z) in enumerate(centroids):
+    ax.text(x, y, z, f'Cluster {i}', fontsize=12, weight='bold', color='black')
+
+ax.set_xlabel('PCA Component 1')
+ax.set_ylabel('PCA Component 2')
+ax.set_zlabel('PCA Component 3')
+ax.set_title('KMeans Clustering on 3D PCA Components (Cluster Labels)')
+plt.colorbar(scatter, label='Cluster')
+plt.tight_layout()
+plt.show()
+
+# Mostrar importancia de variables en los 3 componentes
+loadings = pd.DataFrame(
+    pca.components_.T,
+    columns=['PC1', 'PC2', 'PC3'],
+    index=X.columns
+)
+
+print("Variables más importantes en PC1:")
+print(loadings['PC1'].abs().sort_values(ascending=False).head(10))
+
+print("\nVariables más importantes en PC2:")
+print(loadings['PC2'].abs().sort_values(ascending=False).head(10))
+
+print("\nVariables más importantes en PC3:")
+print(loadings['PC3'].abs().sort_values(ascending=False).head(10))
 
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+A pesar de perder cierta información producto de que los cluster 1 y 4 están muy cerca, pero la separación se asemeja bastante a la previa. 
+En este caso para identificar el primer principal componente resultan más importantes las dummies de primaria e industrial, mientras que para el segundo componente son tecnología y exportaciones de alta tecnología. Por último para el tercer componente resultan más importantes las exportaciones de servicios de transporte y la dummy Tic de países exportadores de servicios de tecnología e información.
 
 
 ---
