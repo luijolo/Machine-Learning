@@ -1900,19 +1900,99 @@ country_continent_mapping = {
     'Zambia': 'Africa'
 }
 
+# Agregar columna de continente al DataFrame
+df['Continente'] = df['Country Name'].map(country_continent_mapping)
+
+# Ver lista de países que no se mapearon
+df.loc[df['Continente'].isna(), 'Country Name'].unique()
+
 """### Pregunta 2.13
 
 Realice un PCA de 2 componentes principales, grafique un _scatterplot_ del resultado y coloree cada punto según su continente. ¿Que se obserba?
 
 """
 
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
+# Verificar las columnas disponibles en el DataFrame
+print("Columnas en df:", df.columns.tolist())
+
+# Definir las columnas numéricas
+columnas_numericas = [
+    'Agricultural raw materials exports (% of merchandise exports)',
+    'Computer; communications and other services (% of commercial service exports)',
+    'Exports of goods and services (% of GDP)',
+    'Food exports (% of merchandise exports)',
+    'Fuel exports (% of merchandise exports)',
+    'GDP growth (annual %)',
+    'High-technology exports (% of manufactured exports)',
+    'ICT service exports (% of service exports; BoP)',
+    'Insurance and financial services (% of service exports; BoP)',
+    'Manufactures exports (% of merchandise exports)',
+    'Merchandise exports to high-income economies (% of total merchandise exports)',
+    'Merchandise exports to low- and middle-income economies in Europe & Central Asia (% of total merchandise exports)',
+    'Ores and metals exports (% of merchandise exports)',
+    'Transport services (% of commercial service exports)',
+    'Manufactures_missing',
+    'Primaria', 'Industrial', 'Tecnologia', 'Tic'
+]
+
+# Seleccionar columnas numéricas
+X = df[columnas_numericas]
+
+# Estandarizar las variables
+scaler = StandardScaler()
+X_escalado = scaler.fit_transform(X)
+
+# Aplicar PCA con 2 componentes
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_escalado)
+
+# Crear un DataFrame con resultados de PCA y Continente
+pca_df = pd.DataFrame({
+    'PCA1': X_pca[:, 0],
+    'PCA2': X_pca[:, 1],
+    'Continente': df['Continente']
+})
+
+# Crear scatterplot coloreado por Continente
+plt.figure(figsize=(10, 6))
+sns.scatterplot(
+    x='PCA1', y='PCA2', hue='Continente', 
+    data=pca_df, palette='tab10', s=100
+)
+plt.xlabel('Componente Principal 1')
+plt.ylabel('Componente Principal 2')
+plt.title('PCA (2 Componentes) - Coloreado por Continente')
+plt.legend(title='Continente', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.tight_layout()
+plt.show()
+
+# Calcular la varianza explicada
+varianza_explicada = pca.explained_variance_ratio_
+print(f"Varianza explicada por PC1: {varianza_explicada[0]:.2%}")
+print(f"Varianza explicada por PC2: {varianza_explicada[1]:.2%}")
+print(f"Varianza total explicada: {sum(varianza_explicada):.2%}")
+
+# Mostrar la importancia de las variables en PC1 y PC2
+cargas = pd.DataFrame(
+    pca.components_.T,
+    columns=['PC1', 'PC2'],
+    index=columnas_numericas
+)
+print("\nVariables más importantes en PC1:")
+print(cargas['PC1'].abs().sort_values(ascending=False).head(5))
+print("\nVariables más importantes en PC2:")
+print(cargas['PC2'].abs().sort_values(ascending=False).head(5))
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
-
+El gráfico confirma visualmente que los perfiles de exportación varían por continente, pero las similitudes económicas (industriales vs. primarias, servicios vs. bienes) son más determinantes que la geografía pura. La baja varianza explicada (35.73%) sugiere que un análisis con más componentes podría ofrecer una separación más clara, pero el PCA de 2 dimensiones es útil para identificar tendencias generales de exposición a una guerra comercial.
 
 ---
 
@@ -1921,13 +2001,62 @@ Realice un PCA de 2 componentes principales, grafique un _scatterplot_ del resul
 Genera el mismo gráfico anterior, pero ahora coloree los puntos del scatterplot usando los clusters de un KMeans de 3 clústers y `random_state=42`. Describa los clusters según el gráfico.
 """
 
+# Seleccionar columnas numéricas
+X = df[columnas_numericas]
 
+# Estandarizar las variables
+scaler = StandardScaler()
+X_escalado = scaler.fit_transform(X)
+
+# Aplicar PCA con 2 componentes
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_escalado)
+
+# Aplicar K-Means con 3 clústeres
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+clusters = kmeans.fit_predict(X_pca)
+
+# Crear un DataFrame con resultados de PCA y clústeres
+pca_df = pd.DataFrame({
+    'PCA1': X_pca[:, 0],
+    'PCA2': X_pca[:, 1],
+    'Cluster': clusters
+})
+
+# Crear scatterplot coloreado por clúster
+plt.figure(figsize=(10, 6))
+sns.scatterplot(
+    x='PCA1', y='PCA2', hue='Cluster', 
+    data=pca_df, palette='tab10', s=100
+)
+plt.xlabel('Componente Principal 1')
+plt.ylabel('Componente Principal 2')
+plt.title('PCA (2 Componentes) - Coloreado por Clústeres K-Means (k=3)')
+plt.legend(title='Clúster')
+plt.tight_layout()
+plt.show()
+
+# Mostrar la importancia de las variables en PC1 y PC2 para interpretar los clústeres
+cargas = pd.DataFrame(
+    pca.components_.T,
+    columns=['PC1', 'PC2'],
+    index=columnas_numericas
+)
+print("\nVariables más importantes en PC1:")
+print(cargas['PC1'].abs().sort_values(ascending=False).head(5))
+print("\nVariables más importantes en PC2:")
+print(cargas['PC2'].abs().sort_values(ascending=False).head(5))
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+- Clúster 0 (azul): Se encuentra en el centro e izquierda del gráfico, con una distribución densa alrededor de (0, 0). Representa países con economías mixtas o diversificadas, con niveles moderados de exportaciones industriales y primarias, sin un enfoque marcado en servicios tecnológicos.
 
+- Clúster 1 (naranja): Está a la derecha del gráfico, indicando países con economías industrializadas, donde las exportaciones de manufacturas son más dominantes. Lo anterior sugiere que incluye naciones europeas y asiáticas con fuerte industria.
+
+- Clúster 2 (verde): Se localiza en la parte inferior izquierda, agrupando países con economías primarias, dependientes de exportaciones agrícolas o minerales, probablemente países de África y Sudamérica.
+
+Es relevante notar que la separación principal se da a lo largo de PC1, que distingue entre economías primarias (clúster 2) e industriales (clúster 1), mientras que PC2 tiene un efecto secundario, con el clúster 0 mostrando una transición entre ambos tipos de economías.
 
 ---
 
@@ -1935,7 +2064,21 @@ Genera el mismo gráfico anterior, pero ahora coloree los puntos del scatterplot
 
 ¿Cual es la proporcion de cada cluster por continente?
 """
+# Agregar la columna Continente al DataFrame con los clústeres
+pca_df['Continente'] = df['Continente']
 
+# Calcular la proporción de cada clúster por continente
+proporciones = pca_df.groupby(['Continente', 'Cluster']).size().unstack(fill_value=0)
+proporciones = proporciones.div(proporciones.sum(axis=1), axis=0)
+
+# Mostrar las proporciones
+print("\nProporción de cada clúster por continente:")
+print(proporciones)
+
+# Opcional: Mostrar en formato más legible (porcentajes)
+proporciones_porcentaje = proporciones * 100
+print("\nProporción de cada clúster por continente (en %):")
+print(proporciones_porcentaje.round(2))
 
 
 """### Pregunta 2.16
@@ -1944,13 +2087,39 @@ Genera el mismo gráfico anterior, pero ahora coloree los puntos del scatterplot
 
 """
 
+# Obtener los centroides en el espacio original (variables estandarizadas)
+centroides = kmeans.fit(X_escalado).cluster_centers_
 
+# Crear un DataFrame con los centroides
+centroides_df = pd.DataFrame(
+    centroides,
+    columns=columnas_numericas,
+    index=[f'Clúster {i}' for i in range(3)]
+)
+
+# Encontrar la característica con mayor magnitud (en valor absoluto) por clúster
+max_caracteristicas = centroides_df.abs().idxmax(axis=1)
+max_valores = centroides_df.apply(lambda x: x[x.abs().idxmax()], axis=1)
+
+# Mostrar resultados
+print("\nCaracterística más alta en magnitud por clúster:")
+for cluster in max_caracteristicas.index:
+    caracteristica = max_caracteristicas[cluster]
+    valor = max_valores[cluster]
+    print(f"{cluster}: {caracteristica} (Valor: {valor:.3f}, Signo: {'Positivo' if valor > 0 else 'Negativo'})")
+
+# Mostrar los centroides completos para referencia
+print("\nCentroides de los clústeres:")
+print(centroides_df)
 
 """---
 
 
-*Escriba* su respuesta en esta celda...
+- Para el clúster 0, la característica numérica más alta en magnitud por clúster es “primaria” con signo positivo; para el clúster 1 “tecnología”, con signo negativo; para el clúster 2 “tecnología” con signo positivo.
 
+- Los centroides muestran el perfil promedio de cada clúster. La característica con mayor magnitud indica la variable que más define a los países de ese grupo. El signo positivo indica que la variable está por encima de la media (fortaleza en esa área), mientras que el negativo indica que está por debajo (debilidad). En este caso, “primaria” define al clúster 0 como economías primarias, y “tecnología” distingue al clúster 1 (baja tecnología) y al clúster 2 (alta tecnología), ayudando a clasificar los países según sus perfiles de exportación.
+
+- Respecto a la guerra comercial: el clúster 0 dominado por “Primaria” (positivo), incluye países con economías dependientes de exportaciones primarias (agricultura, minerales). Son menos vulnerables a aranceles sobre manufacturas, pero su riesgo depende de los mercados de sus productos primarios, que podrían verse afectados por interrupciones comerciales. Por su parte el clúster 1, dominado por “tecnologia” (negativo), agrupa países con baja presencia de exportaciones de alta tecnología, probablemente enfocados en manufacturas tradicionales o primarias. Podrían enfrentar aranceles sobre manufacturas, con exposición variable según sus socios comerciales. Por último, el clúster 2, dominado por “Tecnologia” (positivo), incluye países con economías tecnológicas avanzadas. Tienen una ventaja relativa frente a aranceles tradicionales, pero podrían sufrir si los productos tecnológicos enfrentan restricciones en mercados clave como Estados unidos o la Unión europea.
 
 ---
 """
