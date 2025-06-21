@@ -543,7 +543,7 @@ numericos = df[['ASISTENCIA', 'PROM_GRAL_ANTERIOR', 'EDAD_ALU']]
 
 corr = numericos.corr()
 plt.figure(figsize=(10, 8))
-sns.heatmap(corr, annot=False, cmap='coolwarm', fmt=".2f", square=True)
+sns.heatmap(corr, annot=True, cmap='coolwarm', fmt=".2f", square=True)
 plt.title("Heatmap de correlaciones")
 plt.tight_layout()
 plt.show()
@@ -552,14 +552,23 @@ plt.show()
 categorias = ['GEN_ALU','SIT_FIN_R','PRIORITARIO_ALU', 'PREFERENTE_ALU',
               'BEN_SEP', 'RURAL_RBD', 'COD_DEPE2', 'EE_GRATUITO']
 
-df_graph = df[df['SIT_FIN_R'].isin(['P', 'Y'])]
+df_graph = df
+
+df_graph['SIT_FIN_R'] = df_graph['SIT_FIN_R'].map({'P': 'Aprobado', 'Y': 'Desertor'})
+df_graph['GEN_ALU'] = df_graph['GEN_ALU'].map({1: 'Masculino', 2: 'Femenino'})
+df_graph['PRIORITARIO_ALU'] = df_graph['PRIORITARIO_ALU'].map({1: 'Prioritario', 0: 'No prioritario'})
+df_graph['PREFERENTE_ALU'] = df_graph['PREFERENTE_ALU'].map({1: 'Preferente', 0: 'No preferente'})
+df_graph['BEN_SEP'] = df_graph['BEN_SEP'].map({1: 'Beneficiario', 0: 'No beneficiario'})
+df_graph['RURAL_RBD'] = df_graph['RURAL_RBD'].map({1: 'Rural', 0: 'Urbano'})
+df_graph['COD_DEPE2'] = df_graph['COD_DEPE2'].map({1: 'Municipal', 2: 'Particular Subvencionado', 4: 'Corpoación adm.', 5: 'Servicio local'})
+df_graph['EE_GRATUITO'] = df_graph['EE_GRATUITO'].map({1: 'Gratuidad', 0: 'No gratuidad'})
 
 plt.figure(figsize=(20, 25))
 
 for i, var in enumerate(categorias):
     ax = plt.subplot(5, 2, i + 1)
     sns.countplot(data=df_graph, x=var, palette='pastel', ax=ax)
-    ax.set_title(f'Distribucion de {var} para aprobados y desertores')
+    ax.set_title(f'Distribucion de {var} para alumnos (sin trasladados)')
     ax.set_xlabel(var)
     ax.set_ylabel("Cantidad")
     ax.tick_params(axis='x', rotation=45)
