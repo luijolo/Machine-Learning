@@ -805,8 +805,6 @@ df = pd.get_dummies(df, columns=['COD_GRADO'], prefix='GRADO', dtype=int)
 print(df[['MRUN', 'AGNO', 'PROM_GRAL', 'GRADO_3', 'GRADO_4']].head(10))
 
 
-
-
 """ ##################### Modelo 1 ####################### """
 
 """ ##################### Modelo 2 ####################### """
