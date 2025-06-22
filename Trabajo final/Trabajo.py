@@ -35,7 +35,7 @@ df5 = df5[~df5['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 21
 
 df5['COD_ENSE'].value_counts()
 
-df5 = df5[df5['COD_GRADO'].isin([3, 4])]
+df5 = df5[df5['COD_GRADO'].isin([2, 3, 4])]
 
 df5['COD_GRADO'].value_counts()
 
@@ -51,7 +51,7 @@ df2['COD_ENSE'].value_counts()
 
 df2 = df2[df2['COD_GRADO'] != ' ']
 df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
-df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+df2 = df2[df2['COD_GRADO'].isin([2, 3, 4])]
 df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2024_SEP_filtrado.csv', index=False)
@@ -69,7 +69,7 @@ df4 = df4[~df4['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 21
 
 df4['COD_ENSE'].value_counts()
 
-df4 = df4[df4['COD_GRADO'].isin([3, 4])]
+df4 = df4[df4['COD_GRADO'].isin([2, 3, 4])]
 
 df4['COD_GRADO'].value_counts()
 
@@ -85,7 +85,7 @@ df2['COD_ENSE'].value_counts()
 
 df2 = df2[df2['COD_GRADO'] != ' ']
 df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
-df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+df2 = df2[df2['COD_GRADO'].isin([2, 3, 4])]
 df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2023_SEP_filtrado.csv', index=False)
@@ -103,7 +103,7 @@ df3 = df3[~df3['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 21
 
 df3['COD_ENSE'].value_counts()
 
-df3 = df3[df3['COD_GRADO'].isin([3, 4])]
+df3 = df3[df3['COD_GRADO'].isin([2, 3, 4])]
 
 df3['COD_GRADO'].value_counts()
 
@@ -119,7 +119,7 @@ df2['COD_ENSE'].value_counts()
 
 df2 = df2[df2['COD_GRADO'] != ' ']
 df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
-df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+df2 = df2[df2['COD_GRADO'].isin([2, 3, 4])]
 df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2022_SEP_filtrado.csv', index=False)
@@ -137,7 +137,7 @@ df2 = df2[~df2['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 21
 
 df2['COD_ENSE'].value_counts()
 
-df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+df2 = df2[df2['COD_GRADO'].isin([2, 3, 4])]
 
 df2['COD_GRADO'].value_counts()
 
@@ -153,7 +153,7 @@ df2['COD_ENSE'].value_counts()
 
 df2 = df2[df2['COD_GRADO'] != ' ']
 df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
-df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+df2 = df2[df2['COD_GRADO'].isin([2, 3, 4])]
 df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2021_SEP_filtrado.csv', index=False)
@@ -171,7 +171,7 @@ df1 = df1[~df1['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 21
 
 df1['COD_ENSE'].value_counts()
 
-df1 = df1[df1['COD_GRADO'].isin([3, 4])]
+df1 = df1[df1['COD_GRADO'].isin([2, 3, 4])]
 
 df1['COD_GRADO'].value_counts()
 
@@ -187,7 +187,7 @@ df2['COD_ENSE'].value_counts()
 
 df2 = df2[df2['COD_GRADO'] != ' ']
 df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
-df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+df2 = df2[df2['COD_GRADO'].isin([2, 3, 4])]
 df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2020_SEP_filtrado.csv', index=False)
@@ -205,7 +205,7 @@ df1 = df1[~df1['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 21
 
 df1['COD_ENSE'].value_counts()
 
-df1 = df1[df1['COD_GRADO'].isin([3, 4])]
+df1 = df1[df1['COD_GRADO'].isin([2, 3, 4])]
 
 df1['COD_GRADO'].value_counts()
 
@@ -221,7 +221,7 @@ df2['COD_ENSE'].value_counts()
 
 df2 = df2[df2['COD_GRADO'] != ' ']
 df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
-df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+df2 = df2[df2['COD_GRADO'].isin([2, 3, 4])]
 df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2019_SEP_filtrado.csv', index=False)
@@ -239,7 +239,7 @@ df1 = df1[~df1['COD_ENSE'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 21
 
 df1['COD_ENSE'].value_counts()
 
-df1 = df1[df1['COD_GRADO'].isin([3, 4])]
+df1 = df1[df1['COD_GRADO'].isin([2, 3, 4])]
 
 df1['COD_GRADO'].value_counts()
 
@@ -255,7 +255,7 @@ df2['COD_ENSE'].value_counts()
 
 df2 = df2[df2['COD_GRADO'] != ' ']
 df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
-df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+df2 = df2[df2['COD_GRADO'].isin([2, 3, 4])]
 df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2018_SEP_filtrado.csv', index=False)
@@ -274,7 +274,7 @@ df1 = df1[~df1['cod_ense'].isin([110, 165, 167, 211, 212, 213, 214, 215, 216, 21
 df1['cod_ense'].value_counts()
 
 df1['cod_ense'] = df1['cod_ense'].astype(int)
-df1 = df1[df1['cod_grado'].isin([3, 4])]
+df1 = df1[df1['cod_grado'].isin([2, 3, 4])]
 
 df1['cod_grado'].value_counts()
 
@@ -290,7 +290,7 @@ df2['COD_ENSE'].value_counts()
 
 df2 = df2[df2['COD_GRADO'] != ' ']
 df2['COD_GRADO'] = df2['COD_GRADO'].astype(int)
-df2 = df2[df2['COD_GRADO'].isin([3, 4])]
+df2 = df2[df2['COD_GRADO'].isin([2, 3, 4])]
 df2['COD_GRADO'].value_counts()
 
 df2.to_csv('2017_SEP_filtrado_filtrado.csv', index=False)
@@ -383,8 +383,8 @@ df_p1['PROM_GRAL_ANTERIOR'] = df_p1.groupby('MRUN')['PROM_GRAL'].shift(1)
 # Opcional: Manejar valores nulos (si no hay dato del año anterior)
 df_p1['PROM_GRAL_ANTERIOR'] = df_p1['PROM_GRAL_ANTERIOR'].fillna(np.nan)
 
-# Eliminar los datos de 2016
-df_p1 = df_p1[df_p1['AGNO'] != 2016]
+# Eliminar los datos de 2016 y los que tienen COD_GRADO = 2
+df_p1 = df_p1[(df_p1['AGNO'] != 2016) & (df_p1['COD_GRADO'] != 2)]
 
 # Mostrar las primeras filas para verificar
 print(df_p1[['MRUN', 'AGNO', 'PROM_GRAL', 'PROM_GRAL_ANTERIOR']].head(10))
